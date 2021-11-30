@@ -1,0 +1,38 @@
+﻿<div class="card col-2 mx-2 p-0">
+    <div class="card-header text-center">
+        <h6>
+            <strong>Carpintero #@Carpintero.Numero</strong>
+        </h6>
+    </div>
+
+    <div class="card-body text-center">
+        @if(Carpintero.MarcoTrabajando != null)
+        {
+            <span>Trabajando</span>
+            <br/>
+            <img src="/Resources/carpinteroTrabajando.gif" width="100%" class="mt-2"/>
+        }
+        else
+        {
+            <span>En espera</span>
+            <br/>
+            <img src="/Resources/carpinteroEsperando.png" width="100%" class="mt-2"/>
+        }
+    </div>
+
+    <div class="card-footer">
+        @{
+            Marco marco = Carpintero.MarcoTrabajando;
+
+            if(marco != null)
+            {
+                <BarraProgreso Max="marco.MinutosParaEnsamblaje" Progreso="marco.MinutosTrabajados" Color="success"/>
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Carpintero Carpintero { get; set; }
+}

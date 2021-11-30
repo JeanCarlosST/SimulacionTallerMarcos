@@ -1,0 +1,20 @@
+﻿<div class="progress">
+  <div class="progress-bar bg-@Color" role="progressbar" style="width: @PorcentajeProgreso()%;" aria-valuenow="PorcentajeProgreso()" 
+        aria-valuemin="0" aria-valuemax="100">@PorcentajeProgreso().ToString("0.0")%</div>
+</div>
+
+@code {
+    [Parameter]
+    public float Max { get; set; }
+
+    [Parameter]
+    public float Progreso { get; set; }
+
+    [Parameter]
+    public string Color { get; set; } = "primary";
+
+    public float PorcentajeProgreso()
+    {
+        return (Progreso / Max) * 100f;
+    }
+}

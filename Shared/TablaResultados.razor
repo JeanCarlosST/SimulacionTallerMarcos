@@ -1,0 +1,252 @@
+﻿<div class="modal fade show" role="dialog" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="fs-4 fw-bold">Tabla de Resultados</span>
+                <button type="button" class="btn-close" @onclick="Cerrar" data-bs-dismiss="modal" aria-label="Close"/>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-4 mb-2">
+                        @*RECEPCION*@
+                        <h5>
+                            <strong>Recepción</strong>
+                        </h5> 
+                        <table class="table my-1 text-center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Cant. Marcos X Grupo</th>
+                                    <th scope="col">Cant. Grupos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>4</td>
+                                    <td>@Simulador.Recepcion.CantGruposDeCuatro</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>@Simulador.Recepcion.CantGruposDeSeis</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Total Marcos desmontados</span>
+                            <input type="text" class="form-control text-center" @bind-value="TotalMarcosDesmontados" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Llegada de Grupos</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="col-4 mb-2">
+                        @*CARPINTERÍA*@
+                        <h5>
+                            <strong>Carpintería</strong>
+                        </h5> 
+                        <table class="table my-1 text-center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Carpinteros</th>
+                                    @for(int i = 1; i <= Simulador.Carpinteria.Carpinteros.Count; i++)
+                                    {
+                                        <th scope="col">#@i</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hs Trabajadas</td>
+                                    @foreach(Carpintero carpintero in Simulador.Carpinteria.Carpinteros)
+                                    {
+                                        float horasTrabajadas = carpintero.MinutosTrabajados / 60f;
+                                        <td>@horasTrabajadas.ToString("0.00")</td>   
+                                    }
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Horas x Carpintero</span>
+                            <input type="text" class="form-control text-center" @bind-value="PromedioHorasCarpintero" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Ensamblaje De Marcos</span>
+                            <input type="text" class="form-control text-center" @bind-value="PromedioEnsamblajeMarcos" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="col-4 mb-2">
+                        @*ALMACEN*@
+                        <h5>
+                            <strong>Almacen</strong>
+                        </h5> 
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Max. Histórico Simultáneos</span>
+                            <input type="text" class="form-control text-center" @bind-value="MaxHistoricoSimultaneo" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="col-4 mb-2">
+                        @*PINTURA*@
+                        <h5>
+                            <strong>Pintura</strong>
+                        </h5> 
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Tiempo Uso Máquina de Pintura</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Uso Máquina de Pintura</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Tiempo Mantenimiento Máquina</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Mantenimiento Máquina</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                    </div>
+
+                    <div class="col-4 mb-2">
+                        @*INSPECCION*@
+                        <h5>
+                            <strong>Inspección</strong>
+                        </h5> 
+                        <table class="table my-1 text-center">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Número de Fallas</th>
+                                    <th scope="col">Cant. Marcos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>n</td>
+                                    <td>n</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Tiempo Inspección</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Inspección</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                    </div> 
+
+                    <div class="col-4 mb-2">
+                        @*EMPAQUETADORA*@
+                        <h5>
+                            <strong>Empaquetadora</strong>
+                        </h5> 
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Tiempo Uso Empaquetadora</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                        <div class="input-group my-1">
+                            <span class="input-group-text">Promedio Uso Empaquetadora</span>
+                            <input type="text" class="form-control text-center" readonly/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    [Parameter]
+    public Pages.Simulador Simulador { get; set; }
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public int TotalMarcosDesmontados { get; set; }
+    public string PromedioHorasCarpintero { get; set; }
+    public string PromedioEnsamblajeMarcos { get; set; }
+
+    public int MaxHistoricoSimultaneo { get; set; }
+
+    private Task Cerrar()
+    {
+        return OnClose.InvokeAsync();
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ObtenerDatosSimulacion();
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        ObtenerDatosSimulacion();
+    }
+
+    private void ObtenerDatosSimulacion()
+    {
+        ObtenerDatosRecepcion();
+        ObtenerDatosCarpinteria();
+        ObtenerDatosAlmacen();
+        ObtenerDatosPintura();
+        ObtenerDatosInspeccion();
+        ObtenerDatosEmpaquetadora();
+        ObtenerDatosGeneral();
+    }
+
+    private void ObtenerDatosRecepcion()
+    {
+        TotalMarcosDesmontados =
+            Simulador.Recepcion.CantGruposDeCuatro * 4 +
+            Simulador.Recepcion.CantGruposDeSeis * 6;
+
+    }
+
+    private void ObtenerDatosCarpinteria()
+    {
+        float horasTotalesTrabajados = Simulador.Carpinteria.Carpinteros.Sum(c => c.MinutosTrabajados) / 60;
+        int cantMarcosTrabajados = Simulador.Carpinteria.Carpinteros.Sum(c => c.CantMarcosTrabajados);
+
+        PromedioHorasCarpintero = $"{(horasTotalesTrabajados / Simulador.Carpinteria.Carpinteros.Count).ToString("0.00")}";
+        PromedioEnsamblajeMarcos = $"{(horasTotalesTrabajados / cantMarcosTrabajados).ToString("0.00")}";
+    }
+
+    private void ObtenerDatosAlmacen()
+    {
+        MaxHistoricoSimultaneo = Simulador.Almacen.MaxHistoricoAlmacenado;
+    }
+
+    private void ObtenerDatosPintura()
+    {
+
+
+    }
+
+    private void ObtenerDatosInspeccion()
+    {
+
+    }
+
+    private void ObtenerDatosEmpaquetadora()
+    {
+
+
+    }
+
+    private void ObtenerDatosGeneral()
+    {
+        
+
+    }
+}
+@*
+General
+Cant de marcos completamente trabajados
+*@
+

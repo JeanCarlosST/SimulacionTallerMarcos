@@ -1,0 +1,15 @@
+﻿<div class="card col-1 m-2 p-0">
+    <div class="card-body">
+        <img src="/Resources/marcoSinPintar2.png" width="100%"/>
+    </div>
+
+    <div class="card-footer">
+        <BarraProgreso Max="@(24*60)" Progreso="@Marco.MinutosEnAlmacen"/>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Marco Marco { get; set; }
+
+}

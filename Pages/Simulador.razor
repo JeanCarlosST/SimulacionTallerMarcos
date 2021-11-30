@@ -1,0 +1,354 @@
+﻿@page "/"
+
+<div class="container">
+
+    <div class="row mb-3">
+        <div class="col-4">
+            @if (Estado == EstadoSimulacion.Nueva)
+            {
+                <button type="button" class="btn btn-success btn-lg" @onclick="IniciarSimulacion">
+                    <span>Iniciar</span>
+                </button>
+            }
+            else if (Estado == EstadoSimulacion.Iniciada)
+            {
+                <button type="button" class="btn btn-warning btn-lg" @onclick="PausarSimulacion">
+                    <span>Pausar</span>
+                </button>
+
+                <button type="button" class="btn btn-danger btn-lg mx-2" @onclick="() => { MostrarModalDetener = true; }">
+                    <span>Detener</span>
+                </button>
+            }
+            else if (Estado == EstadoSimulacion.Pausada)
+            {
+                <button type="button" class="btn btn-success btn-lg" @onclick="ReanudarSimulacion">
+                    <span>Reanudar</span>
+                </button>
+
+                <button type="button" class="btn btn-danger btn-lg mx-2" @onclick="() => { MostrarModalDetener = true; }">
+                    <span>Detener</span>
+                </button>
+            }
+        </div>
+        <div class="col-4 text-center">
+            <div class="row">
+                <h5>
+                    <strong>Tiempo transcurrido:</strong>
+                </h5>
+            </div>
+            <div class="row">
+                <h3>
+                    <strong>@Tiempo</strong>
+                </h3>
+            </div>
+        </div>
+        <div class="col-4 d-flex justify-content-end align-items-start">
+            <button type="button" class="btn btn-info btn-lg" @onclick="() => { MostrarTablaResultados = true; }">
+                <span>Tabla de Resultados</span>
+            </button>
+        </div>
+    </div>
+    
+    <br/>
+    <span>Marcos en recepción: @Recepcion.ObtenerCantMarcos()</span>
+    <br/>
+    <span>Marcos en almacen: @Almacen.MarcosEnAlmacen.Count</span>
+    <br/>
+    <span>Máquina de pintura: @(Pintura.MarcoEnProceso != null ? @Pintura.Estado : "Pintando")</span>
+    <br/>
+    <span>Inspección: @(Inspeccion.MarcoEnInspeccion != null ? "Inspeccionando..." : "En espera")</span>
+    <br/>
+    <span>Máquina empaquetadora: @(Empaquetadora.MarcoEnEmpaquetado != null ? "Empaquetando..." : "En espera")</span>
+    <br/>
+    <span>Marcos empaquetados: @Empaquetadora.MarcosEmpaquetados.Count</span>
+    <br/>
+
+    <div class="row my-2">
+        <div class="input-group d-flex justify-content-center align-items-center">
+            <button type="button" class="btn btn-primary" @onclick="MinVelocidad">
+                <span>Min</span>
+            </button>
+    
+            <input type="range" class="form-range w-75 p-0 mx-2" min="@Utilidades.MIN_VELOCIDAD" max="@Utilidades.MAX_VELOCIDAD" 
+                   value="@Utilidades.VelocidadSimulacion" @onchange="e => CambiarVelocidad(e)"/>
+    
+            <button type="button" class="btn btn-primary" @onclick="MaxVelocidad">
+                <span>Max</span>
+            </button>
+
+            <span class="input-group-text">Velocidad: @Utilidades.VelocidadSimulacion</span>
+        </div>
+    </div>
+
+    <div class="accordion mb-5">
+        @*RECEPCION*@
+        <div class="accordion-item">
+            <h2 id="panelHeaderRecepcion" class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#panelRecepcion" aria-expanded="true" aria-controls="panelRecepcion">
+                    Recepción (Marcos desensamblados)
+                </button>
+            </h2>
+            <div id="panelRecepcion" class="accordion-collapse collapse show" aria-labelledby="panelHeaderRecepcion">
+                <div class="accordion-body">
+                    <div class="row d-flex justify-content-center">
+                        @for(int i = 0; i < Recepcion.ObtenerCantMarcos(); i++)
+                        {
+                            <div class="container col-1 m-0">
+                                <img src="/Resources/pilaMadera.png" width="100%"/>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*CARPINTERÍA*@
+        <div class="accordion-item">
+            <h2 id="panelHeaderCarpinteria" class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#panelCarpinteria" aria-expanded="true" aria-controls="panelCarpinteria">
+                    Carpintería
+                </button>
+            </h2>
+            <div id="panelCarpinteria" class="accordion-collapse collapse show" aria-labelledby="panelHeaderCarpinteria">
+                <div class="accordion-body">
+                    <div class="row d-flex justify-content-center">
+                        @foreach(Carpintero carpintero in Carpinteria.Carpinteros)
+                        {
+                            <CarpinteroCarta Carpintero="@carpintero"/>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*ALMACEN*@
+        <div class="accordion-item">
+            <h2 id="panelHeaderAlmacen" class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#panelAlmacen" aria-expanded="true" aria-controls="panelAlmacen">
+                    Almacen
+                </button>
+            </h2>
+            <div id="panelAlmacen" class="accordion-collapse collapse show" aria-labelledby="panelHeaderAlmacen">
+                <div class="accordion-body">
+                    <div class="row d-flex justify-content-center">
+                        @{
+                            List<Marco> marcos = Almacen.MarcosEnAlmacen.FindAll(m => true);
+                            
+                            foreach(Marco marco in marcos)
+                            {
+                                <MarcoCarta Marco="marco"/>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*PINTURA*@
+        <div class="accordion-item">
+            <h2 id="panelHeaderPintura" class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#panelPintura" aria-expanded="true" aria-controls="panelPintura">
+                    Pintura
+                </button>
+            </h2>
+            <div id="panelPintura" class="accordion-collapse collapse show" aria-labelledby="panelHeaderPintura">
+                <div class="accordion-body">
+                    Zona de pintura
+                </div>
+            </div>
+        </div>
+        @*INSPECCIÓN*@
+        <div class="accordion-item">
+            <h2 id="panelHeaderInspeccion" class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#panelInspeccion" aria-expanded="true" aria-controls="panelInspeccion">
+                    Inspección
+                </button>
+            </h2>
+            <div id="panelInspeccion" class="accordion-collapse collapse show" aria-labelledby="panelHeaderInspeccion">
+                <div class="accordion-body">
+                    Zona de inspección
+                </div>
+            </div>
+        </div>
+        @*EMPAQUETADORA*@
+        <div class="accordion-item">
+            <h2 id="panelHeaderEmpaquetadora" class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#panelEmpaquetadora" aria-expanded="true" aria-controls="panelEmpaquetadora">
+                    Empaquetadora
+                </button>
+            </h2>
+            <div id="panelEmpaquetadora" class="accordion-collapse collapse show" aria-labelledby="panelHeaderEmpaquetadora">
+                <div class="accordion-body">
+                    Zona empaquetadora
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if(MostrarModalDetener)
+    {
+        <Modal Titulo="Detener Simulación" Descripcion="¿Estás seguro que quiere detener la simulación?" 
+                BtnVerdeTexto="Sí, detener" BtnRojoTexto="No, volver" OnClose="DetenerSimulacion"/>
+    }
+
+    @if(MostrarTablaResultados)
+    {
+        <TablaResultados Simulador="this" OnClose="() => MostrarTablaResultados = false"/>
+    }
+</div>
+
+@code 
+{
+    private Tiempo Tiempo { get; set; }
+    public Recepcion Recepcion { get; set; }
+    public Carpinteria Carpinteria { get; set; }
+    public Almacen Almacen { get; set; }
+    public Pintura Pintura { get; set; }
+    public Inspeccion Inspeccion { get; set; }
+    public Empaquetadora Empaquetadora { get; set; }
+
+    private Timer Temporizador { get; set; }
+
+    private int MinutosTranscurridos { get; set; }
+
+    private enum EstadoSimulacion { Nueva, Iniciada, Pausada }
+    private EstadoSimulacion Estado = EstadoSimulacion.Nueva;
+
+    private bool MostrarModalDetener = false;
+    private bool MostrarTablaResultados = false;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        EstablecerDatosSimulacion();
+    }
+
+    public void EstablecerDatosSimulacion()
+    {
+        Tiempo = new();
+        Recepcion = new();
+        Carpinteria = new();
+        Almacen = new();
+        Pintura = new(Almacen);
+        Inspeccion = new(Pintura, Carpinteria);
+        Empaquetadora = new(Inspeccion);
+
+        Temporizador = new Timer(Utilidades.VelocidadSimulacion);
+        Temporizador.Elapsed += TallerEventHandler;
+    }
+
+    public void TallerEventHandler(object source, ElapsedEventArgs e)
+    {
+        InvokeAsync(() =>
+        {
+            if(MinutosTranscurridos >= 600000)
+            {
+                PausarSimulacion();
+            }
+
+            if(MinutosTranscurridos % 300 == 0)
+            {
+                Recepcion.GenerarMarcos();
+            }
+
+            Carpinteria.RecibirMarcos(Recepcion);
+            Carpinteria.AlmacenarMarcos(Almacen);
+
+            MinutosTranscurridos++;
+            Tiempo.Avanzar();
+
+            StateHasChanged();
+        });
+    }
+
+    public void IniciarSimulacion()
+    {
+        Temporizador.Enabled = true;
+        Carpinteria.ComenzarATrabajar();
+        Almacen.ComenzarTemporizador();
+        Pintura.ComenzarTemporizador();
+        Inspeccion.ComenzarTemporizador();
+        Empaquetadora.ComenzarTemporizador();
+        Estado = EstadoSimulacion.Iniciada;
+    }
+
+    public void PausarSimulacion()
+    {
+        Estado = EstadoSimulacion.Pausada;
+        Carpinteria.PausarTrabajo();
+        Almacen.PausarTemporizador();
+        Pintura.PausarTemporizador();
+        Inspeccion.PausarTemporizador();
+        Empaquetadora.PausarTemporizador();
+        Temporizador.Stop();
+    }
+
+    public void ReanudarSimulacion()
+    {
+        Temporizador.Enabled = true;
+        Carpinteria.ComenzarATrabajar();
+        Almacen.ComenzarTemporizador();
+        Pintura.ComenzarTemporizador();
+        Inspeccion.ComenzarTemporizador();
+        Empaquetadora.ComenzarTemporizador();
+        Estado = EstadoSimulacion.Iniciada;
+    }
+
+    public void DetenerSimulacion(bool detener)
+    {
+        MostrarModalDetener = false;
+
+        if(detener)
+        {
+            Estado = EstadoSimulacion.Nueva;
+            Carpinteria.PausarTrabajo();
+            Almacen.PausarTemporizador();
+            Pintura.PausarTemporizador();
+            Inspeccion.PausarTemporizador();
+            Empaquetadora.PausarTemporizador();
+            Temporizador.Stop();
+            MinutosTranscurridos = 0;
+            EstablecerDatosSimulacion();
+
+            StateHasChanged();
+        }
+    }
+
+    private void CambiarVelocidad(ChangeEventArgs e)
+    {
+        Utilidades.VelocidadSimulacion = Convert.ToInt32(e.Value);
+        Temporizador.Interval = Utilidades.VelocidadSimulacion;
+
+        Carpinteria.CambiarVelocidad();
+        Almacen.CambiarVelocidad();
+        Pintura.CambiarVelocidad();
+        Inspeccion.CambiarVelocidad();
+        Empaquetadora.CambiarVelocidad();
+
+        StateHasChanged();
+    }
+
+    private void MinVelocidad()
+    {
+        Utilidades.VelocidadSimulacion = Utilidades.MIN_VELOCIDAD;
+        Temporizador.Interval = Utilidades.VelocidadSimulacion;
+
+        ChangeEventArgs e = new ChangeEventArgs();
+        e.Value = Utilidades.VelocidadSimulacion;
+        CambiarVelocidad(e);
+    }
+
+    private void MaxVelocidad()
+    {
+        Utilidades.VelocidadSimulacion = Utilidades.MAX_VELOCIDAD;
+        Temporizador.Interval = Utilidades.VelocidadSimulacion;
+        
+        ChangeEventArgs e = new ChangeEventArgs();
+        e.Value = Utilidades.VelocidadSimulacion;
+        CambiarVelocidad(e);
+    }
+}
