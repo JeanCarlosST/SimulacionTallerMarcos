@@ -49,35 +49,28 @@
             </button>
         </div>
     </div>
-    
+
     <br/>
-    <span>Marcos en recepción: @Recepcion.ObtenerCantMarcos()</span>
+    <span>Total de marcos completamente procesados: @TotalMarcosProcesados</span>
     <br/>
-    <span>Marcos en almacen: @Almacen.MarcosEnAlmacen.Count</span>
-    <br/>
-    <span>Máquina de pintura: @(Pintura.MarcoEnProceso != null ? @Pintura.Estado : "Pintando")</span>
-    <br/>
-    <span>Inspección: @(Inspeccion.MarcoEnInspeccion != null ? "Inspeccionando..." : "En espera")</span>
+    <span>Máquina de pintura: @Pintura.Estado</span>
     <br/>
     <span>Máquina empaquetadora: @(Empaquetadora.MarcoEnEmpaquetado != null ? "Empaquetando..." : "En espera")</span>
-    <br/>
-    <span>Marcos empaquetados: @Empaquetadora.MarcosEmpaquetados.Count</span>
-    <br/>
 
     <div class="row my-2">
         <div class="input-group d-flex justify-content-center align-items-center">
             <button type="button" class="btn btn-primary" @onclick="MinVelocidad">
-                <span>Min</span>
+                <span>Max</span>
             </button>
     
             <input type="range" class="form-range w-75 p-0 mx-2" min="@Utilidades.MIN_VELOCIDAD" max="@Utilidades.MAX_VELOCIDAD" 
                    value="@Utilidades.VelocidadSimulacion" @onchange="e => CambiarVelocidad(e)"/>
     
             <button type="button" class="btn btn-primary" @onclick="MaxVelocidad">
-                <span>Max</span>
+                <span>Min</span>
             </button>
 
-            <span class="input-group-text">Velocidad: @Utilidades.VelocidadSimulacion</span>
+            <span class="input-group-text">Velocidad: @(1001 - Utilidades.VelocidadSimulacion)</span>
         </div>
     </div>
 
@@ -87,11 +80,12 @@
             <h2 id="panelHeaderRecepcion" class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                         data-bs-target="#panelRecepcion" aria-expanded="true" aria-controls="panelRecepcion">
-                    Recepción (Marcos desensamblados)
+                    <strong>Recepción (Marcos desensamblados)</strong>
                 </button>
             </h2>
             <div id="panelRecepcion" class="accordion-collapse collapse show" aria-labelledby="panelHeaderRecepcion">
-                <div class="accordion-body">
+                <div class="accordion-body text-center">
+                    <span>Cantidad actual de marcos en recepción: @Recepcion.ObtenerCantMarcos()</span>
                     <div class="row d-flex justify-content-center">
                         @for(int i = 0; i < Recepcion.ObtenerCantMarcos(); i++)
                         {
@@ -108,7 +102,7 @@
             <h2 id="panelHeaderCarpinteria" class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                         data-bs-target="#panelCarpinteria" aria-expanded="true" aria-controls="panelCarpinteria">
-                    Carpintería
+                    <strong>Carpintería</strong>
                 </button>
             </h2>
             <div id="panelCarpinteria" class="accordion-collapse collapse show" aria-labelledby="panelHeaderCarpinteria">
@@ -127,11 +121,12 @@
             <h2 id="panelHeaderAlmacen" class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                         data-bs-target="#panelAlmacen" aria-expanded="true" aria-controls="panelAlmacen">
-                    Almacen
+                    <strong>Almacen</strong>
                 </button>
             </h2>
             <div id="panelAlmacen" class="accordion-collapse collapse show" aria-labelledby="panelHeaderAlmacen">
-                <div class="accordion-body">
+                <div class="accordion-body text-center">
+                    <span>Cantidad actual de marcos en almacen: @Almacen.MarcosEnAlmacen.Count</span>
                     <div class="row d-flex justify-content-center">
                         @{
                             List<Marco> marcos = Almacen.MarcosEnAlmacen.FindAll(m => true);
@@ -150,12 +145,22 @@
             <h2 id="panelHeaderPintura" class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                         data-bs-target="#panelPintura" aria-expanded="true" aria-controls="panelPintura">
-                    Pintura
+                    <strong>Pintura</strong>
                 </button>
             </h2>
             <div id="panelPintura" class="accordion-collapse collapse show" aria-labelledby="panelHeaderPintura">
-                <div class="accordion-body">
-                    Zona de pintura
+                <div class="accordion-body text-center">
+                    <div class="row d-flex justify-content-around">
+                        <div class="col">
+                            <span>Cantidad de marcos en cola para pintar: @Pintura.MarcosEnEspera.Count</span>
+                        </div>
+                        <div class="col">
+                            <span>Marcos para mantenimiento: @(20 - Pintura.MarcosPintados % 20)</span>
+                        </div>
+                    </div>
+                    <div class="row d-flex justify-content-center">
+                        <MarcoPinturaCarta Pintura="Pintura"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -164,12 +169,13 @@
             <h2 id="panelHeaderInspeccion" class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                         data-bs-target="#panelInspeccion" aria-expanded="true" aria-controls="panelInspeccion">
-                    Inspección
+                    <strong>Inspección</strong>
                 </button>
             </h2>
             <div id="panelInspeccion" class="accordion-collapse collapse show" aria-labelledby="panelHeaderInspeccion">
-                <div class="accordion-body">
-                    Zona de inspección
+                <div class="accordion-body row justify-content-center text-center">
+                    <MarcoInspeccionCarta Marco="Inspeccion.MarcoEnInspeccion" 
+                                            MinutosEnInspeccion="Inspeccion.ObtenerMinutosInspeccionActual()"/>
                 </div>
             </div>
         </div>
@@ -178,12 +184,16 @@
             <h2 id="panelHeaderEmpaquetadora" class="accordion-header">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" 
                         data-bs-target="#panelEmpaquetadora" aria-expanded="true" aria-controls="panelEmpaquetadora">
-                    Empaquetadora
+                    <strong>Empaquetadora</strong>
                 </button>
             </h2>
             <div id="panelEmpaquetadora" class="accordion-collapse collapse show" aria-labelledby="panelHeaderEmpaquetadora">
-                <div class="accordion-body">
-                    Zona empaquetadora
+                <div class="accordion-body text-center">
+                    <span>Cantidad de marcos en cola para empaquetar: @Empaquetadora.MarcosPorEmpaquetar.Count</span>
+                    <div class="row d-flex justify-content-center">
+                        <MarcoEmpaquetadoraCarta Marco="Empaquetadora.MarcoEnEmpaquetado" 
+                                                 MinutosEnEmpaquetado="Empaquetadora.MinutosConMarcoActual"/>
+                    </div>
                 </div>
             </div>
         </div>
@@ -214,6 +224,7 @@
     private Timer Temporizador { get; set; }
 
     private int MinutosTranscurridos { get; set; }
+    public int TotalMarcosProcesados { get; set; }
 
     private enum EstadoSimulacion { Nueva, Iniciada, Pausada }
     private EstadoSimulacion Estado = EstadoSimulacion.Nueva;
@@ -234,7 +245,7 @@
         Carpinteria = new();
         Almacen = new();
         Pintura = new(Almacen);
-        Inspeccion = new(Pintura, Carpinteria);
+        Inspeccion = new(Pintura, Recepcion);
         Empaquetadora = new(Inspeccion);
 
         Temporizador = new Timer(Utilidades.VelocidadSimulacion);
@@ -257,6 +268,7 @@
 
             Carpinteria.RecibirMarcos(Recepcion);
             Carpinteria.AlmacenarMarcos(Almacen);
+            TotalMarcosProcesados = Empaquetadora.TotalMarcosEmpaquetados;
 
             MinutosTranscurridos++;
             Tiempo.Avanzar();

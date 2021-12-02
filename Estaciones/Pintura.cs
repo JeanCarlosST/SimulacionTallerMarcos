@@ -14,6 +14,9 @@ namespace SimulacionTallerMarcos.Estaciones
         public int MinutosEnMantenimiento { get; set; }
         public int MinutosParaMantenimiento { get; set; }
         public int MarcosPintados { get; set; }
+        public int VecesEnMantenimiento { get; set; }
+        public int TotalMinutosPintando { get; set; }
+        public int TotalMinutosEnMantenimiento { get; set; }
         public Timer TemporizadorMaquina { get; set; }
         public enum EstadoMaquinaPintura { Funcionando, Mantenimiento }
         public EstadoMaquinaPintura Estado { get; set; }
@@ -47,6 +50,7 @@ namespace SimulacionTallerMarcos.Estaciones
                 {
                     MinutosConMarcoEnProceso++;
                     MarcoEnProceso.MinutosTrabajados++;
+                    TotalMinutosPintando++;
 
                     if (MarcoEnProceso.MinutosParaPintado == MinutosConMarcoEnProceso && MarcoPintado == null)
                     {
@@ -61,6 +65,7 @@ namespace SimulacionTallerMarcos.Estaciones
                         {
                             MinutosParaMantenimiento = Utilidades.AleatorioEntre(2, 4) * 15;
                             Estado = EstadoMaquinaPintura.Mantenimiento;
+                            VecesEnMantenimiento++;
                         }
                     }
                 }
@@ -77,6 +82,7 @@ namespace SimulacionTallerMarcos.Estaciones
         private void RealizarMantenimiento()
         {
             MinutosEnMantenimiento++;
+            TotalMinutosEnMantenimiento++;
 
             if(MinutosEnMantenimiento >= MinutosParaMantenimiento)
             {

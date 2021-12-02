@@ -5,30 +5,44 @@
         </h6>
     </div>
 
-    <div class="card-body text-center">
+    <div class="card-header text-center">
         @if(Carpintero.MarcoTrabajando != null)
         {
             <span>Trabajando</span>
-            <br/>
-            <img src="/Resources/carpinteroTrabajando.gif" width="100%" class="mt-2"/>
         }
         else
         {
             <span>En espera</span>
-            <br/>
+        }
+    </div>
+
+    <div class="card-body text-center">
+        @if(Carpintero.MarcoTrabajando != null)
+        {
+            <img src="/Resources/carpinteroTrabajando.gif" width="100%" class="mt-2"/>
+        }
+        else
+        {
             <img src="/Resources/carpinteroEsperando.png" width="100%" class="mt-2"/>
         }
     </div>
 
     <div class="card-footer">
-        @{
-            Marco marco = Carpintero.MarcoTrabajando;
+        <div class="row d-flex align-items-center">
+            @{
+                Marco marco = Carpintero.MarcoTrabajando;
 
-            if(marco != null)
-            {
-                <BarraProgreso Max="marco.MinutosParaEnsamblaje" Progreso="marco.MinutosTrabajados" Color="success"/>
+                if(marco != null)
+                {
+                    <div class="col-10 pr-0">
+                        <BarraProgreso Max="marco.MinutosParaEnsamblaje" Progreso="marco.MinutosTrabajados" Color="success"/>
+                    </div>
+                    <div class="col-2 p-0">
+                        <span>@(marco.MinutosParaEnsamblaje/60f)h</span>
+                    </div>
+                }
             }
-        }
+        </div>
     </div>
 </div>
 

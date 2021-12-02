@@ -1,0 +1,51 @@
+﻿<div class="card col-2 m-2 p-0">
+    <div class="card-body text-center">
+        @if(Pintura.Estado == Pintura.EstadoMaquinaPintura.Mantenimiento)
+        {
+            <span> En mantenimiento </span>
+            <img src="/Resources/mantenimiento.gif" width="100%"/>
+        }
+        else if(Pintura.MarcoEnProceso != null)
+        {
+            <img src="/Resources/marcoPintando.gif" width="100%"/>
+        }
+        else
+        {
+            <h6>
+                <strong>No hay ningún marco pintándose</strong>
+            </h6>
+        }
+    </div>
+
+    @if(Pintura.Estado == Pintura.EstadoMaquinaPintura.Mantenimiento)
+    {
+        <div class="card-footer">
+            <div class="row d-flex align-items-center">
+                <div class="col-9 pr-0">
+                    <BarraProgreso Max="@Pintura.MinutosParaMantenimiento" Progreso="@Pintura.MinutosEnMantenimiento" Color="dark"/>
+                </div>
+                <div class="col-3 p-0">
+                    <span>@(Pintura.MinutosParaMantenimiento)m</span>
+                </div>
+            </div>
+        </div>
+    }
+    @if(Pintura.MarcoEnProceso != null)
+    {
+        <div class="card-footer">
+            <div class="row d-flex align-items-center">
+                <div class="col-9 pr-0">
+                    <BarraProgreso Max="@Pintura.MarcoEnProceso.MinutosParaPintado" Progreso="@Pintura.MinutosConMarcoEnProceso" Color="dark"/>
+                </div>
+                <div class="col-3 p-0">
+                    <span>@(Pintura.MarcoEnProceso.MinutosParaPintado)m</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Pintura Pintura { get; set; }
+}

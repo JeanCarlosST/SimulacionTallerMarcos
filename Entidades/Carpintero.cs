@@ -56,10 +56,12 @@ namespace SimulacionTallerMarcos.Entidades
             if(MarcoTrabajando != null && MarcoTrabajando.Estado == EstadoMarco.Ensamblando)
             {
                 MarcoTrabajando.MinutosTrabajados++;
+                MarcoTrabajando.MinutosEnEnsamblaje++;
                 MinutosTrabajados++;
 
-                if(MarcoTrabajando.MinutosParaEnsamblaje == MarcoTrabajando.MinutosTrabajados)
+                if(MarcoTrabajando.MinutosEnEnsamblaje == MarcoTrabajando.MinutosParaEnsamblaje)
                 {
+                    MarcoTrabajando.MinutosEnEnsamblaje = 0;
                     MarcoTrabajando.Estado = EstadoMarco.EnsambladoPegamentoFresco;
                     CantMarcosTrabajados++;
                 }

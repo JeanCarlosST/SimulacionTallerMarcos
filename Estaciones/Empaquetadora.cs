@@ -6,11 +6,13 @@ namespace SimulacionTallerMarcos.Estaciones
 {
     public class Empaquetadora
     {
-        public Timer TemporizadorInspeccion { get; set; }
+        public Timer TemporizadorEmpaquetadora { get; set; }
         public Queue<Marco> MarcosPorEmpaquetar { get; set; }
         public Queue<Marco> MarcosEmpaquetados { get; set; }
         public Marco MarcoEnEmpaquetado { get; set; }
         public int MinutosConMarcoActual { get; set; }
+        public int TotalMinutosEmpaquetando { get; set; }
+        public int TotalMarcosEmpaquetados { get; set; }
         public Inspeccion Inspeccion { get; set; }
 
         public Empaquetadora(Inspeccion inspeccion)
@@ -19,21 +21,22 @@ namespace SimulacionTallerMarcos.Estaciones
             MarcosPorEmpaquetar = new();
             MarcosEmpaquetados = new();
 
-            TemporizadorInspeccion = new Timer(Utilidades.VelocidadSimulacion);
-            TemporizadorInspeccion.Elapsed += TemporizadorInspeccion_Elapsed;
+            TemporizadorEmpaquetadora = new Timer(Utilidades.VelocidadSimulacion);
+            TemporizadorEmpaquetadora.Elapsed += TemporizadorEmpaquetadora_Elapsed;
         }
 
-        private void TemporizadorInspeccion_Elapsed(object sender, ElapsedEventArgs e)
+        private void TemporizadorEmpaquetadora_Elapsed(object sender, ElapsedEventArgs e)
         {
             if(MarcoEnEmpaquetado != null && MarcoEnEmpaquetado.Estado == EstadoMarco.Empacando)
             {
                 MinutosConMarcoActual++;
+                TotalMinutosEmpaquetando++;
 
                 if(MarcoEnEmpaquetado.MinutosParaEmpaquetar == MinutosConMarcoActual)
                 {
                     MinutosConMarcoActual = 0;
+                    TotalMarcosEmpaquetados++;
 
-                    MarcosEmpaquetados.Enqueue(MarcoEnEmpaquetado);
                     MarcoEnEmpaquetado = null;
                 }
             }
@@ -54,16 +57,16 @@ namespace SimulacionTallerMarcos.Estaciones
 
         public void ComenzarTemporizador()
         {
-            TemporizadorInspeccion.Enabled = true;
+            TemporizadorEmpaquetadora.Enabled = true;
         }
 
         public void PausarTemporizador()
         {
-            TemporizadorInspeccion.Enabled = false;
+            TemporizadorEmpaquetadora.Enabled = false;
         }
         public void CambiarVelocidad()
         {
-            TemporizadorInspeccion.Interval = Utilidades.VelocidadSimulacion;
+            TemporizadorEmpaquetadora.Interval = Utilidades.VelocidadSimulacion;
         }
     }
 }

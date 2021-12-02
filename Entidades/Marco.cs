@@ -18,6 +18,7 @@
     {
         public int MinutosTrabajados { get; set; }
         public int MinutosEnAlmacen { get; set; }
+        public int MinutosEnEnsamblaje { get; set; }
         public int MinutosParaPintado { get; set; }
         public int MinutosParaEnsamblaje { get; set; }
         public int MinutosParaInspeccion { get; set; }

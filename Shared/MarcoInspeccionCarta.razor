@@ -1,0 +1,37 @@
+﻿<div class="card col-2 m-2 p-0">
+    <div class="card-body">
+        @if(Marco != null)
+        {
+            <span>Inspeccionando</span>
+            <img src="/Resources/inspeccionandoMarco.gif" width="100%"/>
+        }
+        else
+        {
+            <h6>
+                <strong>No hay ningún marco en inspección</strong>
+            </h6>
+        }
+    </div>
+
+    @if(Marco != null)
+    {
+        <div class="card-footer">
+            <div class="row d-flex align-items-center">
+                <div class="col-9 pr-0">
+                    <BarraProgreso Max="@Marco.MinutosParaInspeccion" Progreso="@MinutosEnInspeccion"/>
+                </div>
+                <div class="col-3 p-0">
+                    <span>@(Marco.MinutosParaInspeccion)m</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Marco Marco { get; set; }
+
+    [Parameter]
+    public int MinutosEnInspeccion { get; set; }
+}

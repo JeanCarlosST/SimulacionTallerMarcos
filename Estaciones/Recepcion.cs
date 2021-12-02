@@ -38,6 +38,11 @@ namespace SimulacionTallerMarcos.Estaciones
             return Marcos.Count;
         }
 
+        public void RecibirMarcoDefectuoso(Marco marco)
+        {
+            Marcos.Enqueue(marco);
+        }
+
         public Marco ObtenerSigteMarco()
         {
             if(ObtenerCantMarcos() > 0 )

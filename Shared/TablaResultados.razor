@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-4 mb-2">
+                    <div class="col-6 mb-2">
                         @*RECEPCION*@
                         <h5>
                             <strong>Recepción</strong>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="col-4 mb-2">
+                    <div class="col-6 mb-2">
                         @*CARPINTERÍA*@
                         <h5>
                             <strong>Carpintería</strong>
@@ -57,7 +57,7 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Hs Trabajadas</td>
+                                    <td>Horas Trabajadas</td>
                                     @foreach(Carpintero carpintero in Simulador.Carpinteria.Carpinteros)
                                     {
                                         float horasTrabajadas = carpintero.MinutosTrabajados / 60f;
@@ -76,7 +76,7 @@
                         </div>
                     </div>
 
-                    <div class="col-4 mb-2">
+                    <div class="col-6 mb-2">
                         @*ALMACEN*@
                         <h5>
                             <strong>Almacen</strong>
@@ -87,30 +87,30 @@
                         </div>
                     </div>
 
-                    <div class="col-4 mb-2">
+                    <div class="col-6 mb-2">
                         @*PINTURA*@
                         <h5>
                             <strong>Pintura</strong>
                         </h5> 
                         <div class="input-group my-1">
                             <span class="input-group-text">Tiempo Uso Máquina de Pintura</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="TotalUsoPintura" readonly/>
                         </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Promedio Uso Máquina de Pintura</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="PromedioUsoPintura" readonly/>
                         </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Tiempo Mantenimiento Máquina</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="TotalMantenimientoPintura" readonly/>
                         </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Promedio Mantenimiento Máquina</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="PromedioMantenimientoPintura" readonly/>
                         </div>
                     </div>
 
-                    <div class="col-4 mb-2">
+                    <div class="col-6 mb-2">
                         @*INSPECCION*@
                         <h5>
                             <strong>Inspección</strong>
@@ -123,34 +123,37 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>n</td>
-                                    <td>n</td>
-                                </tr>
+                                @for(int i = 0; i < Simulador.Inspeccion.MarcosDefectuosos.Count; i++)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td>@Simulador.Inspeccion.MarcosDefectuosos[i]</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                         <div class="input-group my-1">
                             <span class="input-group-text">Tiempo Inspección</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="TotalInspeccion" readonly/>
                         </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Promedio Inspección</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="@PromedioInspeccion" readonly/>
                         </div>
                     </div> 
 
-                    <div class="col-4 mb-2">
+                    <div class="col-6 mb-2">
                         @*EMPAQUETADORA*@
                         <h5>
                             <strong>Empaquetadora</strong>
                         </h5> 
                         <div class="input-group my-1">
                             <span class="input-group-text">Tiempo Uso Empaquetadora</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="TotalEmpaquetadora" readonly/>
                         </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Promedio Uso Empaquetadora</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="PromedioEmpaquetadora" readonly/>
                         </div>
                     </div>
                 </div>
@@ -172,6 +175,17 @@
     public string PromedioEnsamblajeMarcos { get; set; }
 
     public int MaxHistoricoSimultaneo { get; set; }
+
+    public string TotalUsoPintura { get; set; }
+    public string PromedioUsoPintura { get; set; }
+    public string TotalMantenimientoPintura { get; set; }
+    public string PromedioMantenimientoPintura { get; set; }
+
+    public string TotalInspeccion { get; set; }
+    public string PromedioInspeccion { get; set; }
+
+    public string TotalEmpaquetadora { get; set; }
+    public string PromedioEmpaquetadora { get; set; }
 
     private Task Cerrar()
     {
@@ -214,7 +228,11 @@
         int cantMarcosTrabajados = Simulador.Carpinteria.Carpinteros.Sum(c => c.CantMarcosTrabajados);
 
         PromedioHorasCarpintero = $"{(horasTotalesTrabajados / Simulador.Carpinteria.Carpinteros.Count).ToString("0.00")}";
-        PromedioEnsamblajeMarcos = $"{(horasTotalesTrabajados / cantMarcosTrabajados).ToString("0.00")}";
+
+        if (cantMarcosTrabajados > 0)
+            PromedioEnsamblajeMarcos = $"{(horasTotalesTrabajados / cantMarcosTrabajados).ToString("0.00")}";
+        else
+            PromedioEnsamblajeMarcos = "0.00";
     }
 
     private void ObtenerDatosAlmacen()
@@ -224,18 +242,39 @@
 
     private void ObtenerDatosPintura()
     {
+        TotalUsoPintura = (Simulador.Pintura.TotalMinutosPintando / 60f).ToString("0.00");
 
+        if (Simulador.Pintura.MarcosPintados > 0)
+            PromedioUsoPintura = $"{((float)Simulador.Pintura.TotalMinutosPintando / Simulador.Pintura.MarcosPintados / 60f).ToString("0.00")}";
+        else
+            PromedioUsoPintura = "0.00";
 
+        TotalMantenimientoPintura = (Simulador.Pintura.TotalMinutosEnMantenimiento / 60f).ToString("0.00");
+
+        if (Simulador.Pintura.VecesEnMantenimiento > 0)
+            PromedioMantenimientoPintura = $"{((float)Simulador.Pintura.TotalMinutosEnMantenimiento / Simulador.Pintura.VecesEnMantenimiento / 60f).ToString("0.00")}";
+        else
+            PromedioMantenimientoPintura = "0.00";
     }
 
     private void ObtenerDatosInspeccion()
     {
+        TotalInspeccion = (Simulador.Inspeccion.TotalMinutosInspeccionados / 60f).ToString("0.00");
 
+        if (Simulador.Inspeccion.CantMarcosInspeccionados > 0)
+            PromedioInspeccion = $"{((float)Simulador.Inspeccion.TotalMinutosInspeccionados / Simulador.Inspeccion.CantMarcosInspeccionados / 60f).ToString("0.00")}";
+        else
+            PromedioInspeccion = "0.00";
     }
 
     private void ObtenerDatosEmpaquetadora()
     {
+        TotalEmpaquetadora = (Simulador.Empaquetadora.TotalMinutosEmpaquetando / 60f).ToString("0.00");
 
+        if (Simulador.Empaquetadora.TotalMarcosEmpaquetados > 0)
+            PromedioEmpaquetadora = $"{((float)Simulador.Empaquetadora.TotalMinutosEmpaquetando / Simulador.Empaquetadora.TotalMarcosEmpaquetados / 60f).ToString("0.00")}";
+        else
+            PromedioEmpaquetadora = "0.00";
 
     }
 

@@ -11,15 +11,18 @@ namespace SimulacionTallerMarcos.Estaciones
         public Queue<Marco> MarcosPorInspeccionar { get; set; }
         public Queue<Marco> MarcosInspeccionados { get; set; }
         public Pintura Pintura { get; set; }
-        public Carpinteria Carpinteria { get; set; }
+        public Recepcion Recepcion { get; set; }
         private int MinutosConMarcoActual { get; set; }
-
-        public Inspeccion(Pintura pintura, Carpinteria carpinteria)
+        public int TotalMinutosInspeccionados { get; set; }
+        public int CantMarcosInspeccionados { get; set; }
+        public List<int> MarcosDefectuosos { get; set; }
+        public Inspeccion(Pintura pintura, Recepcion recepcion)
         {
             MarcosPorInspeccionar = new();
             MarcosInspeccionados = new();
+            MarcosDefectuosos = new();
             Pintura = pintura;
-            Carpinteria = carpinteria;
+            Recepcion = recepcion;
             TemporizadorInspeccion = new Timer(Utilidades.VelocidadSimulacion);
             TemporizadorInspeccion.Elapsed += TemporizadorInspeccion_Elapsed;
         }
@@ -29,22 +32,26 @@ namespace SimulacionTallerMarcos.Estaciones
             if(MarcoEnInspeccion != null)
             {
                 MinutosConMarcoActual++;
+                TotalMinutosInspeccionados++;
 
-                if(MinutosConMarcoActual == MarcoEnInspeccion.MinutosParaInspeccion)
+                if (MinutosConMarcoActual == MarcoEnInspeccion.MinutosParaInspeccion)
                 {
                     MinutosConMarcoActual = 0;
+                    CantMarcosInspeccionados++;
 
-                    if(Utilidades.AleatorioEntre(1,10) > 1) //PasZó la inspección
+                    if(Utilidades.AleatorioEntre(1,10) > 1) //Pasó la inspección
                     {
                         MarcoEnInspeccion.Estado = EstadoMarco.Correcto;
+                        MarcosInspeccionados.Enqueue(MarcoEnInspeccion);
                     }
                     else
                     {
                         MarcoEnInspeccion.VecesRetrabajado++;
                         MarcoEnInspeccion.Estado = EstadoMarco.Defectuoso;
+                        Recepcion.RecibirMarcoDefectuoso(MarcoEnInspeccion);
                     }
 
-                    MarcosInspeccionados.Enqueue(MarcoEnInspeccion);
+                    AgregarCasoMarco(MarcoEnInspeccion.VecesRetrabajado);
                     MarcoEnInspeccion = null;
                 }
             }
@@ -62,6 +69,18 @@ namespace SimulacionTallerMarcos.Estaciones
             }    
         }
 
+        public void AgregarCasoMarco(int cantFallada)
+        {
+            if (cantFallada + 1 > MarcosDefectuosos.Count)
+            {
+                MarcosDefectuosos.Add(1);
+            }
+            else
+            {
+                MarcosDefectuosos[cantFallada]++;
+            }
+        }
+
         public Marco EntregarMarcoInspeccionado()
         {
             Marco marco = null;
@@ -72,6 +91,11 @@ namespace SimulacionTallerMarcos.Estaciones
             }
 
             return marco;
+        }
+
+        public int ObtenerMinutosInspeccionActual()
+        {
+            return MinutosConMarcoActual;
         }
 
         public void ComenzarTemporizador()
