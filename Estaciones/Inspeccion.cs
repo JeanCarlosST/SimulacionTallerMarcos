@@ -6,7 +6,6 @@ namespace SimulacionTallerMarcos.Estaciones
 {
     public class Inspeccion
     {
-        public Timer TemporizadorInspeccion { get; set; }
         public Marco MarcoEnInspeccion { get; set; }
         public Queue<Marco> MarcosPorInspeccionar { get; set; }
         public Queue<Marco> MarcosInspeccionados { get; set; }
@@ -23,11 +22,9 @@ namespace SimulacionTallerMarcos.Estaciones
             MarcosDefectuosos = new();
             Pintura = pintura;
             Recepcion = recepcion;
-            TemporizadorInspeccion = new Timer(Utilidades.VelocidadSimulacion);
-            TemporizadorInspeccion.Elapsed += TemporizadorInspeccion_Elapsed;
         }
 
-        private void TemporizadorInspeccion_Elapsed(object sender, ElapsedEventArgs e)
+        public void Inspeccionar()
         {
             if(MarcoEnInspeccion != null)
             {
@@ -98,18 +95,5 @@ namespace SimulacionTallerMarcos.Estaciones
             return MinutosConMarcoActual;
         }
 
-        public void ComenzarTemporizador()
-        {
-            TemporizadorInspeccion.Enabled = true;
-        }
-
-        public void PausarTemporizador()
-        {
-            TemporizadorInspeccion.Enabled = false;
-        }
-        public void CambiarVelocidad()
-        {
-            TemporizadorInspeccion.Interval = Utilidades.VelocidadSimulacion;
-        }
     }
 }

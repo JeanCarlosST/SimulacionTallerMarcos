@@ -10,32 +10,20 @@ namespace SimulacionTallerMarcos.Entidades
         public Marco MarcoTrabajando { get; set; }
         public int MinutosTrabajados { get; set; }
         public int CantMarcosTrabajados { get; set; }
-        private Timer TemporizadorTrabajo { get; set; }
+        public Recepcion Recepcion { get; set; }
+        public Almacen Almacen { get; set; }
 
-        public Carpintero(int numero)
-        {
+        public Carpintero(int numero, Recepcion recepcion, Almacen almacen)
+        { 
             Numero = numero;
-            TemporizadorTrabajo = new Timer(Utilidades.VelocidadSimulacion);
-            TemporizadorTrabajo.Elapsed += TrabajarMarco;
+            Recepcion = recepcion;
+            Almacen = almacen;
         }
 
-        public void ComenzarATrabajar()
+        public void RecibirMarco()
         {
-            TemporizadorTrabajo.Enabled = true;
-        }
+            Marco marco = Recepcion.ObtenerSigteMarco();
 
-        public void PausarTrabajo()
-        {
-            TemporizadorTrabajo.Enabled = false;
-        }
-
-        public void CambiarVelocidadTrabajo()
-        {
-            TemporizadorTrabajo.Interval = Utilidades.VelocidadSimulacion;
-        }
-
-        public void RecibirMarco(Marco marco)
-        {
             if(marco != null)
             {
                 MarcoTrabajando = marco;
@@ -43,7 +31,7 @@ namespace SimulacionTallerMarcos.Entidades
             }
         }
 
-        public Marco EntregarMarco()
+        private Marco EntregarMarco()
         {
             Marco marco = MarcoTrabajando;
             MarcoTrabajando = null;
@@ -51,19 +39,24 @@ namespace SimulacionTallerMarcos.Entidades
             return marco;
         }
 
-        public void TrabajarMarco(object source, ElapsedEventArgs e)
+        public void TrabajarMarco()
         {
-            if(MarcoTrabajando != null && MarcoTrabajando.Estado == EstadoMarco.Ensamblando)
+            if(MarcoTrabajando == null)
+            {
+                RecibirMarco();
+            }
+            else if(MarcoTrabajando != null && MarcoTrabajando.Estado == EstadoMarco.Ensamblando)
             {
                 MarcoTrabajando.MinutosTrabajados++;
                 MarcoTrabajando.MinutosEnEnsamblaje++;
                 MinutosTrabajados++;
 
-                if(MarcoTrabajando.MinutosEnEnsamblaje == MarcoTrabajando.MinutosParaEnsamblaje)
+                if(MarcoTrabajando.MinutosEnEnsamblaje >= MarcoTrabajando.MinutosParaEnsamblaje)
                 {
                     MarcoTrabajando.MinutosEnEnsamblaje = 0;
                     MarcoTrabajando.Estado = EstadoMarco.EnsambladoPegamentoFresco;
                     CantMarcosTrabajados++;
+                    Almacen.MarcosEnEspera.Add(EntregarMarco());
                 }
             }
         }

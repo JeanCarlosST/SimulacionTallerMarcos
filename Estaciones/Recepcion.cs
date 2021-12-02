@@ -45,6 +45,8 @@ namespace SimulacionTallerMarcos.Estaciones
 
         public Marco ObtenerSigteMarco()
         {
+            Marco marco = null;
+            
             if(ObtenerCantMarcos() > 0 )
             {
                 return Marcos.Dequeue();

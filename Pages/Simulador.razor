@@ -6,7 +6,7 @@
         <div class="col-4">
             @if (Estado == EstadoSimulacion.Nueva)
             {
-                <button type="button" class="btn btn-success btn-lg" @onclick="IniciarSimulacion">
+                <button type="button" class="btn btn-success btn-lg" @onclick="ReanudarSimulacion">
                     <span>Iniciar</span>
                 </button>
             }
@@ -53,9 +53,6 @@
     <br/>
     <span>Total de marcos completamente procesados: @TotalMarcosProcesados</span>
     <br/>
-    <span>Máquina de pintura: @Pintura.Estado</span>
-    <br/>
-    <span>Máquina empaquetadora: @(Empaquetadora.MarcoEnEmpaquetado != null ? "Empaquetando..." : "En espera")</span>
 
     <div class="row my-2">
         <div class="input-group d-flex justify-content-center align-items-center">
@@ -202,7 +199,7 @@
     @if(MostrarModalDetener)
     {
         <Modal Titulo="Detener Simulación" Descripcion="¿Estás seguro que quiere detener la simulación?" 
-                BtnVerdeTexto="Sí, detener" BtnRojoTexto="No, volver" OnClose="DetenerSimulacion"/>
+               BtnVerdeTexto="Sí, detener" BtnRojoTexto="No, volver" OnClose="DetenerSimulacion"/>
     }
 
     @if(MostrarTablaResultados)
@@ -223,6 +220,8 @@
 
     private Timer Temporizador { get; set; }
 
+    public int TotalTiempoEntreLlegadaGrupos { get; set; }
+    public int ProximaLlegadaGrupos { get; set; }
     private int MinutosTranscurridos { get; set; }
     public int TotalMarcosProcesados { get; set; }
 
@@ -242,8 +241,8 @@
     {
         Tiempo = new();
         Recepcion = new();
-        Carpinteria = new();
         Almacen = new();
+        Carpinteria = new(Recepcion, Almacen);
         Pintura = new(Almacen);
         Inspeccion = new(Pintura, Recepcion);
         Empaquetadora = new(Inspeccion);
@@ -261,13 +260,20 @@
                 PausarSimulacion();
             }
 
-            if(MinutosTranscurridos % 300 == 0)
+            if(MinutosTranscurridos >= ProximaLlegadaGrupos)
             {
                 Recepcion.GenerarMarcos();
+                int CantTiempoProxLlegada = Utilidades.AleatorioEntre(180, 420);
+                ProximaLlegadaGrupos = MinutosTranscurridos + CantTiempoProxLlegada;
+                TotalTiempoEntreLlegadaGrupos += CantTiempoProxLlegada;
             }
 
-            Carpinteria.RecibirMarcos(Recepcion);
-            Carpinteria.AlmacenarMarcos(Almacen);
+            Carpinteria.Trabajar();
+            Almacen.Almacenar();
+            Pintura.Pintar();
+            Inspeccion.Inspeccionar();
+            Empaquetadora.Empaquetar();
+
             TotalMarcosProcesados = Empaquetadora.TotalMarcosEmpaquetados;
 
             MinutosTranscurridos++;
@@ -277,36 +283,15 @@
         });
     }
 
-    public void IniciarSimulacion()
-    {
-        Temporizador.Enabled = true;
-        Carpinteria.ComenzarATrabajar();
-        Almacen.ComenzarTemporizador();
-        Pintura.ComenzarTemporizador();
-        Inspeccion.ComenzarTemporizador();
-        Empaquetadora.ComenzarTemporizador();
-        Estado = EstadoSimulacion.Iniciada;
-    }
-
     public void PausarSimulacion()
     {
         Estado = EstadoSimulacion.Pausada;
-        Carpinteria.PausarTrabajo();
-        Almacen.PausarTemporizador();
-        Pintura.PausarTemporizador();
-        Inspeccion.PausarTemporizador();
-        Empaquetadora.PausarTemporizador();
         Temporizador.Stop();
     }
 
     public void ReanudarSimulacion()
     {
         Temporizador.Enabled = true;
-        Carpinteria.ComenzarATrabajar();
-        Almacen.ComenzarTemporizador();
-        Pintura.ComenzarTemporizador();
-        Inspeccion.ComenzarTemporizador();
-        Empaquetadora.ComenzarTemporizador();
         Estado = EstadoSimulacion.Iniciada;
     }
 
@@ -317,11 +302,6 @@
         if(detener)
         {
             Estado = EstadoSimulacion.Nueva;
-            Carpinteria.PausarTrabajo();
-            Almacen.PausarTemporizador();
-            Pintura.PausarTemporizador();
-            Inspeccion.PausarTemporizador();
-            Empaquetadora.PausarTemporizador();
             Temporizador.Stop();
             MinutosTranscurridos = 0;
             EstablecerDatosSimulacion();
@@ -334,12 +314,6 @@
     {
         Utilidades.VelocidadSimulacion = Convert.ToInt32(e.Value);
         Temporizador.Interval = Utilidades.VelocidadSimulacion;
-
-        Carpinteria.CambiarVelocidad();
-        Almacen.CambiarVelocidad();
-        Pintura.CambiarVelocidad();
-        Inspeccion.CambiarVelocidad();
-        Empaquetadora.CambiarVelocidad();
 
         StateHasChanged();
     }

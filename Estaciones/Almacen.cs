@@ -10,7 +10,6 @@ namespace SimulacionTallerMarcos.Estaciones
         public List<Marco> MarcosEnEspera { get; set; }
         public List<Marco> MarcosEnAlmacen { get; set; }
         public List<Marco> MarcosSecos { get; set; }
-        public Timer Temporizador { get; set; }
         public Carpinteria Carpinteria { get; set; }
         public Pintura Pintura { get; set; }
         public int MaxHistoricoAlmacenado { get; set; }
@@ -20,53 +19,38 @@ namespace SimulacionTallerMarcos.Estaciones
             MarcosEnEspera = new();
             MarcosEnAlmacen = new();
             MarcosSecos = new();
+        }
 
-            Temporizador = new Timer(Utilidades.VelocidadSimulacion);
-            Temporizador.Elapsed += new ElapsedEventHandler(async (source, e) =>
+        public void Almacenar()
+        {
+            foreach (Marco marco in MarcosEnAlmacen)
             {
-                foreach(Marco marco in MarcosEnAlmacen)
+                if (marco != null)
                 {
-                    if(marco != null)
-                    {
-                        marco.MinutosEnAlmacen++;
-                        marco.MinutosTrabajados++;
+                    marco.MinutosEnAlmacen++;
+                    marco.MinutosTrabajados++;
 
-                        if(marco.MinutosEnAlmacen >= 24*60)
-                        {
-                            marco.Estado = EstadoMarco.EnsambladoPegamentoSeco;
-                            MarcosSecos.Add(marco);
-                        }
-                    }
-                    else
+                    if (marco.MinutosEnAlmacen >= 24 * 60)
                     {
-                        var a = MarcosEnAlmacen.Find(m => m == null);
+                        marco.Estado = EstadoMarco.EnsambladoPegamentoSeco;
+                        MarcosSecos.Add(marco);
                     }
                 }
-
-                MarcosEnAlmacen.RemoveAll(m => m != null && m.Estado == EstadoMarco.EnsambladoPegamentoSeco);
-
-                MarcosEnAlmacen.AddRange(MarcosEnEspera);
-                MarcosEnEspera.Clear();
-
-                if(MarcosEnAlmacen.Count > MaxHistoricoAlmacenado)
+                else
                 {
-                    MaxHistoricoAlmacenado = MarcosEnAlmacen.Count;
+                    var a = MarcosEnAlmacen.Find(m => m == null);
                 }
-            });
-        }
+            }
 
-        public void ComenzarTemporizador()
-        {
-            Temporizador.Enabled = true;
-        }
+            MarcosEnAlmacen.RemoveAll(m => m != null && m.Estado == EstadoMarco.EnsambladoPegamentoSeco);
 
-        public void PausarTemporizador()
-        {
-            Temporizador.Enabled = false;
-        }
-        public void CambiarVelocidad()
-        {
-            Temporizador.Interval = Utilidades.VelocidadSimulacion;
+            MarcosEnAlmacen.AddRange(MarcosEnEspera);
+            MarcosEnEspera.Clear();
+
+            if (MarcosEnAlmacen.Count > MaxHistoricoAlmacenado)
+            {
+                MaxHistoricoAlmacenado = MarcosEnAlmacen.Count;
+            }
         }
 
         public List<Marco> ObtenerMarcosSecos()

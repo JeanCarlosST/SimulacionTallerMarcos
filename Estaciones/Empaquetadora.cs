@@ -6,7 +6,6 @@ namespace SimulacionTallerMarcos.Estaciones
 {
     public class Empaquetadora
     {
-        public Timer TemporizadorEmpaquetadora { get; set; }
         public Queue<Marco> MarcosPorEmpaquetar { get; set; }
         public Queue<Marco> MarcosEmpaquetados { get; set; }
         public Marco MarcoEnEmpaquetado { get; set; }
@@ -20,12 +19,9 @@ namespace SimulacionTallerMarcos.Estaciones
             Inspeccion = inspeccion;
             MarcosPorEmpaquetar = new();
             MarcosEmpaquetados = new();
-
-            TemporizadorEmpaquetadora = new Timer(Utilidades.VelocidadSimulacion);
-            TemporizadorEmpaquetadora.Elapsed += TemporizadorEmpaquetadora_Elapsed;
         }
 
-        private void TemporizadorEmpaquetadora_Elapsed(object sender, ElapsedEventArgs e)
+        public void Empaquetar()
         {
             if(MarcoEnEmpaquetado != null && MarcoEnEmpaquetado.Estado == EstadoMarco.Empacando)
             {
@@ -53,20 +49,6 @@ namespace SimulacionTallerMarcos.Estaciones
             {
                 MarcosPorEmpaquetar.Enqueue(proxMarco);
             }
-        }
-
-        public void ComenzarTemporizador()
-        {
-            TemporizadorEmpaquetadora.Enabled = true;
-        }
-
-        public void PausarTemporizador()
-        {
-            TemporizadorEmpaquetadora.Enabled = false;
-        }
-        public void CambiarVelocidad()
-        {
-            TemporizadorEmpaquetadora.Interval = Utilidades.VelocidadSimulacion;
         }
     }
 }

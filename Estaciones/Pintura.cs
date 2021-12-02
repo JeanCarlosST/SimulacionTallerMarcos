@@ -17,7 +17,6 @@ namespace SimulacionTallerMarcos.Estaciones
         public int VecesEnMantenimiento { get; set; }
         public int TotalMinutosPintando { get; set; }
         public int TotalMinutosEnMantenimiento { get; set; }
-        public Timer TemporizadorMaquina { get; set; }
         public enum EstadoMaquinaPintura { Funcionando, Mantenimiento }
         public EstadoMaquinaPintura Estado { get; set; }
         public Almacen Almacen { get; set; }
@@ -26,8 +25,6 @@ namespace SimulacionTallerMarcos.Estaciones
         {
             MarcosEnEspera = new Queue<Marco>();
             Estado = EstadoMaquinaPintura.Funcionando;
-            TemporizadorMaquina = new Timer(Utilidades.VelocidadSimulacion);
-            TemporizadorMaquina.Elapsed += TemporizadorMaquina_Elapsed;
             Almacen = almacen;
         }
 
@@ -38,7 +35,7 @@ namespace SimulacionTallerMarcos.Estaciones
             return temp;
         }
 
-        private void TemporizadorMaquina_Elapsed(object sender, ElapsedEventArgs e)
+        public void Pintar()
         {
             if(Estado == EstadoMaquinaPintura.Mantenimiento)
             {
@@ -86,6 +83,7 @@ namespace SimulacionTallerMarcos.Estaciones
 
             if(MinutosEnMantenimiento >= MinutosParaMantenimiento)
             {
+                MinutosEnMantenimiento = 0;
                 Estado = EstadoMaquinaPintura.Funcionando;
             }
         }
@@ -99,20 +97,6 @@ namespace SimulacionTallerMarcos.Estaciones
                     MarcosEnEspera.Enqueue(marco);
                 }
             }
-        }
-
-        public void ComenzarTemporizador()
-        {
-            TemporizadorMaquina.Enabled = true;
-        }
-
-        public void PausarTemporizador()
-        {
-            TemporizadorMaquina.Enabled = false;
-        }
-        public void CambiarVelocidad()
-        {
-            TemporizadorMaquina.Interval = Utilidades.VelocidadSimulacion;
         }
     }
 }

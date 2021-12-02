@@ -36,7 +36,7 @@
                         </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Promedio Llegada de Grupos</span>
-                            <input type="text" class="form-control text-center" readonly/>
+                            <input type="text" class="form-control text-center" @bind-value="PromedioLlegadaGrupos" readonly/>
                         </div>
                     </div>
 
@@ -171,6 +171,8 @@
     public EventCallback OnClose { get; set; }
 
     public int TotalMarcosDesmontados { get; set; }
+    public string PromedioLlegadaGrupos { get; set; }
+
     public string PromedioHorasCarpintero { get; set; }
     public string PromedioEnsamblajeMarcos { get; set; }
 
@@ -220,6 +222,12 @@
             Simulador.Recepcion.CantGruposDeCuatro * 4 +
             Simulador.Recepcion.CantGruposDeSeis * 6;
 
+        int CantGrupos = (Simulador.Recepcion.CantGruposDeCuatro + Simulador.Recepcion.CantGruposDeSeis);
+        
+        if (CantGrupos > 0)
+            PromedioLlegadaGrupos = (Simulador.TotalTiempoEntreLlegadaGrupos / CantGrupos / 60f).ToString("0.00");
+        else
+            PromedioLlegadaGrupos = "0.00";
     }
 
     private void ObtenerDatosCarpinteria()
