@@ -44,8 +44,13 @@
             </div>
         </div>
         <div class="col-4 d-flex justify-content-end align-items-start">
-            <button type="button" class="btn btn-info btn-lg" @onclick="() => { MostrarTablaResultados = true; }">
+            <button type="button" class="btn btn-info btn-lg mx-2" @onclick="() => { MostrarTablaResultados = true; }">
                 <span>Tabla de Resultados</span>
+            </button>
+
+            <button type="button" class="btn btn-secondary btn-lg" 
+            @onclick="() => { MostrarConfiguracion = true; }" disabled="@(Estado != EstadoSimulacion.Nueva)">
+                <span class="oi oi-terminal"></span>
             </button>
         </div>
     </div>
@@ -206,6 +211,11 @@
     {
         <TablaResultados Simulador="this" OnClose="() => MostrarTablaResultados = false"/>
     }
+
+    @if(MostrarConfiguracion)
+    {
+        <ConfiguracionModal OnClose="CerrarConfiguracion"/>
+    }
 </div>
 
 @code 
@@ -230,10 +240,12 @@
 
     private bool MostrarModalDetener = false;
     private bool MostrarTablaResultados = false;
+    private bool MostrarConfiguracion = false;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        Configuracion.EstablecerConfiguracion();
         EstablecerDatosSimulacion();
     }
 
@@ -247,8 +259,14 @@
         Inspeccion = new(Pintura, Recepcion);
         Empaquetadora = new(Inspeccion);
 
+        TotalTiempoEntreLlegadaGrupos = 0;
+        ProximaLlegadaGrupos = 0;
+        MinutosTranscurridos = 0;
+
         Temporizador = new Timer(Utilidades.VelocidadSimulacion);
         Temporizador.Elapsed += TallerEventHandler;
+
+        StateHasChanged();
     }
 
     public void TallerEventHandler(object source, ElapsedEventArgs e)
@@ -263,7 +281,7 @@
             if(MinutosTranscurridos >= ProximaLlegadaGrupos)
             {
                 Recepcion.GenerarMarcos();
-                int CantTiempoProxLlegada = Utilidades.AleatorioEntre(180, 420);
+                int CantTiempoProxLlegada = Utilidades.AleatorioEntre(Configuracion.MinTiempoLlegada, Configuracion.MaxTiempoLlegada);
                 ProximaLlegadaGrupos = MinutosTranscurridos + CantTiempoProxLlegada;
                 TotalTiempoEntreLlegadaGrupos += CantTiempoProxLlegada;
             }
@@ -308,6 +326,16 @@
 
             StateHasChanged();
         }
+    }
+
+    private void CerrarConfiguracion(bool refrescar)
+    {
+        if(refrescar) 
+        { 
+             EstablecerDatosSimulacion(); 
+        }
+
+        MostrarConfiguracion = false; 
     }
 
     private void CambiarVelocidad(ChangeEventArgs e)

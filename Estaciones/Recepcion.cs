@@ -7,23 +7,32 @@ namespace SimulacionTallerMarcos.Estaciones
     public class Recepcion
     {
         private Queue<Marco> Marcos { get; set; } = new();
-        public int CantGruposDeCuatro { get; set; }
-        public int CantGruposDeSeis { get; set; }
+
+        public Dictionary<int, int> CantGrupos { get; set; } = new();
 
         public void GenerarMarcos()
         {
-            int cantMarcos;
-            int prob = Utilidades.AleatorioEntre(1,10);
+            int cantMarcos = 4;
+            int prob = Utilidades.AleatorioEntre(1,100);
+            int probAcumulada = 0;
             
-            if(prob <= 4)
+            foreach(Grupo grupo in Configuracion.Grupos)
             {
-                cantMarcos = 6;
-                CantGruposDeSeis++;
-            }
-            else
-            {
-                cantMarcos = 4;
-                CantGruposDeCuatro++;
+                probAcumulada += grupo.Probabilidad;
+
+                if(prob < probAcumulada)
+                {
+                    cantMarcos = grupo.CantMarcos;
+                    if (CantGrupos.ContainsKey(cantMarcos))
+                    {
+                        CantGrupos[cantMarcos]++;
+                    }
+                    else
+                    {
+                        CantGrupos.Add(cantMarcos, 1);
+                    }
+                    break;
+                }
             }
 
             for(int i = 0; i < cantMarcos; i++)

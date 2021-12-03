@@ -20,14 +20,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>4</td>
-                                    <td>@Simulador.Recepcion.CantGruposDeCuatro</td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>@Simulador.Recepcion.CantGruposDeSeis</td>
-                                </tr>
+                                @foreach(KeyValuePair<int,int> grupo in Simulador.Recepcion.CantGrupos)
+                                {
+                                    <tr>
+                                        <td>@grupo.Key</td>
+                                        <td>@grupo.Value</td>
+                                    </tr>
+                                }
                             </tbody>
                         </table>
                         <div class="input-group my-1">
@@ -218,11 +217,9 @@
 
     private void ObtenerDatosRecepcion()
     {
-        TotalMarcosDesmontados =
-            Simulador.Recepcion.CantGruposDeCuatro * 4 +
-            Simulador.Recepcion.CantGruposDeSeis * 6;
+        TotalMarcosDesmontados = Simulador.Recepcion.CantGrupos.Sum(g => g.Key * g.Value);
 
-        int CantGrupos = (Simulador.Recepcion.CantGruposDeCuatro + Simulador.Recepcion.CantGruposDeSeis);
+        int CantGrupos = Simulador.Recepcion.CantGrupos.Sum(g => g.Key);
         
         if (CantGrupos > 0)
             PromedioLlegadaGrupos = (Simulador.TotalTiempoEntreLlegadaGrupos / CantGrupos / 60f).ToString("0.00");

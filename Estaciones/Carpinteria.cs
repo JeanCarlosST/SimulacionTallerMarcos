@@ -14,7 +14,7 @@ namespace SimulacionTallerMarcos.Estaciones
         {
             Carpinteros = new List<Carpintero>(); 
 
-            for(int i = 0; i < 5; i++)
+            for(int i = 0; i < Configuracion.CantCarpinteros; i++)
             {
                 Carpintero carpintero = new(i+1, recepcion, almacen);
                 Carpinteros.Add(carpintero);

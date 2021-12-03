@@ -25,24 +25,17 @@ namespace SimulacionTallerMarcos.Estaciones
         {
             foreach (Marco marco in MarcosEnAlmacen)
             {
-                if (marco != null)
-                {
-                    marco.MinutosEnAlmacen++;
-                    marco.MinutosTrabajados++;
+                marco.MinutosEnAlmacen++;
+                marco.MinutosTrabajados++;
 
-                    if (marco.MinutosEnAlmacen >= 24 * 60)
-                    {
-                        marco.Estado = EstadoMarco.EnsambladoPegamentoSeco;
-                        MarcosSecos.Add(marco);
-                    }
-                }
-                else
+                if (marco.MinutosEnAlmacen >= 24 * 60)
                 {
-                    var a = MarcosEnAlmacen.Find(m => m == null);
+                    marco.Estado = EstadoMarco.EnsambladoPegamentoSeco;
+                    MarcosSecos.Add(marco);
                 }
             }
 
-            MarcosEnAlmacen.RemoveAll(m => m != null && m.Estado == EstadoMarco.EnsambladoPegamentoSeco);
+            MarcosEnAlmacen.RemoveAll(m => m.Estado == EstadoMarco.EnsambladoPegamentoSeco);
 
             MarcosEnAlmacen.AddRange(MarcosEnEspera);
             MarcosEnEspera.Clear();
