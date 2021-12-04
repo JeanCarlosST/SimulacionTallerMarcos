@@ -1,24 +1,151 @@
 ﻿<div class="modal fade show" role="dialog" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="fs-4 fw-bold">Tabla de Resultados</span>
+                <span class="fs-4 fw-bold">Configuración</span>
                 <button type="button" class="btn-close" @onclick="() => Cerrar(false)" data-bs-dismiss="modal" aria-label="Close"/>
             </div>
-            <div class="modal-body">
-                 <div class="input-group my-1">
-                    <span class="input-group-text">Cantidad de carpinteros</span>
-                    <input type="number" class="form-control text-center" min="5" @bind-value="CantCarpinteros"/>
+            <div class="modal-body d-flex justify-content-center">
+                <div class="col-12">
+                    <ul class="nav nav-tabs d-flex justify-content-center" id="ConfTab" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" id="RecepcionTab" data-bs-toggle="tab" data-bs-target="#recepcion" 
+                                    type="button" role="tab" aria-controls="recepcion" aria-selected="true">
+                                    Recepción
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="CarpinteriaTab" data-bs-toggle="tab" data-bs-target="#carpinteria" 
+                                    type="button" role="tab" aria-controls="carpinteria" aria-selected="false">
+                                    Carpintería
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="AlmacenTab" data-bs-toggle="tab" data-bs-target="#almacen" 
+                                    type="button" role="tab" aria-controls="almacen" aria-selected="false">
+                                    Almacen
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="PinturaTab" data-bs-toggle="tab" data-bs-target="#pintura" 
+                                    type="button" role="tab" aria-controls="pintura" aria-selected="false">
+                                    Pintura
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="InspeccionTab" data-bs-toggle="tab" data-bs-target="#inspeccion" 
+                                    type="button" role="tab" aria-controls="inspeccion" aria-selected="false">
+                                    Inspección
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" id="EmpaquetadoraTab" data-bs-toggle="tab" data-bs-target="#empaquetadora" 
+                                    type="button" role="tab" aria-controls="empaquetadora" aria-selected="false">
+                                    Empaquetadora
+                            </button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="contenido">
+                        <div class="tab-pane fade show active pt-2" id="recepcion" role="tabpanel" aria-labelledby="RecepcionTab">
+                            <table class="table my-1 text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Cant. Marcos X Grupo</th>
+                                        <th scope="col">Probabilidad</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach(Grupo grupo in Grupos)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="number" class="form-control text-center" @bind-value="grupo.CantMarcos"/>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control text-center" @bind-value="grupo.Probabilidad"/>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-danger" @onclick="() => {Grupos.Remove(grupo);}">
+                                                    <span class="oi oi-trash"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                    <tr>
+                                        <td colspan="3">
+                                            <button type="button" class="btn btn-success" @onclick="AgregarNuevoGrupo">
+                                                <span class="oi oi-plus mr-2"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Tiempo min. llegada entre grupos</span>
+                                <input type="number" class="form-control text-center" min="1" @bind-value="MinTiempoLlegada"/>
+                                <span class="input-group-text">Tiempo max. llegada entre grupos</span>
+                                <input type="number" class="form-control text-center" min="1" @bind-value="MaxTiempoLlegada"/>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="carpinteria" role="tabpanel" aria-labelledby="CarpinteriaTab">
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Cantidad de carpinteros</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="CantCarpinteros"/>
+                            </div>
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Mínimo Tiempo Trabajar Marco</span>
+                                <input type="number" class="form-control text-center" min="1" @bind-value="MinTiempoTrabajarMarco"/>
+                            </div>
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Máximo Tiempo Trabajar Marco</span>
+                                <input type="number" class="form-control text-center" min="1" @bind-value="MaxTiempoTrabajarMarco"/>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade pt-2" id="almacen" role="tabpanel" aria-labelledby="AlmacenTab">
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Tiempo secado</span>
+                                <input type="number" class="form-control text-center" min="1" @bind-value="TiempoSecado"/>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade pt-2" id="pintura" role="tabpanel" aria-labelledby="PinturaTab">
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Cantidad marcos para mantenimiento</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="CantMarcosParaMantenimiento"/>
+                            </div>
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Tiempo min. para pintado</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="MinTiempoPintado"/>
+                                <span class="input-group-text">Tiempo max. para pintado</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="MaxTiempoPintado"/>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade pt-2" id="inspeccion" role="tabpanel" aria-labelledby="InspeccionTab">
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Probabilidad de acierto en inspección</span>
+                                <input type="number" class="form-control text-center" min="1" @bind-value="ProbAciertoInspeccion"/>
+                            </div>
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Tiempo min. para inspección</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="MinTiempoInspeccion"/>
+                                <span class="input-group-text">Tiempo max. para inspección</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="MinTiempoInspeccion"/>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade pt-2" id="empaquetadora" role="tabpanel" aria-labelledby="EmpaquetadoraTab">
+                            <div class="input-group my-1">
+                                <span class="input-group-text">Tiempo min. para empaquetado</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="MinTiempoEmpaquetado"/>
+                                <span class="input-group-text">Tiempo max. para empaquetado</span>
+                                <input type="number" class="form-control text-center" min="5" @bind-value="MaxTiempoEmpaquetado"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="input-group my-1">
-                    <span class="input-group-text">Tiempo min. llegada entre grupos</span>
-                    <input type="number" class="form-control text-center" min="1" @bind-value="MinTiempoLlegada"/>
-                    <span class="input-group-text">Tiempo max. llegada entre grupos</span>
-                    <input type="number" class="form-control text-center" min="1" @bind-value="MaxTiempoLlegada"/>
-                </div>
+                
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" @onclick="Configuracion.EstablecerConfiguracion">
+                <button type="button" class="btn btn-warning" @onclick="ReestablecerConfiguracion">
                     Reestablecer configuración
                 </button>
                 <button type="button" class="btn btn-success" @onclick="GuardarConfiguracion">
@@ -33,22 +160,106 @@
     [Parameter]
     public EventCallback<bool> OnClose { get; set; }
 
-    public static int MinTiempoLlegada { get; set; } = Configuracion.MinTiempoLlegada;
-    public static int MaxTiempoLlegada { get; set; } = Configuracion.MaxTiempoLlegada;
+    public List<Grupo> Grupos { get; set; } = Configuracion.Grupos;
+
+    public int MinTiempoLlegada { get; set; } = Configuracion.MinTiempoLlegada;
+    public int MaxTiempoLlegada { get; set; } = Configuracion.MaxTiempoLlegada;
 
     public int CantCarpinteros { get; set; } = Configuracion.CantCarpinteros;
+
+    public int MinTiempoTrabajarMarco { get; set; } = Configuracion.MinTiempoTrabajarMarco;
+    public int MaxTiempoTrabajarMarco { get; set; } = Configuracion.MaxTiempoTrabajarMarco;
+
+    public int TiempoSecado { get; set; } = Configuracion.TiempoSecado;
+
+    public int CantMarcosParaMantenimiento { get; set; } = Configuracion.CantMarcosParaMantenimiento;
+    public int MinTiempoPintado { get; set; } = Configuracion.MinTiempoPintado;
+    public int MaxTiempoPintado { get; set; } = Configuracion.MaxTiempoPintado;
+
+    public int ProbAciertoInspeccion { get; set; } = Configuracion.ProbAciertoInspeccion;
+    public int MinTiempoInspeccion { get; set; } = Configuracion.MinTiempoInspeccion;
+    public int MaxTiempoInspeccion { get; set; } = Configuracion.MaxTiempoInspeccion;
+
+    public int MinTiempoEmpaquetado { get; set; } = Configuracion.MinTiempoEmpaquetado;
+    public int MaxTiempoEmpaquetado { get; set; } = Configuracion.MaxTiempoEmpaquetado;
+
 
     private Task Cerrar(bool refrescar)
     {
         return OnClose.InvokeAsync(refrescar);
     }
 
+    private void ReestablecerConfiguracion()
+    {
+        Configuracion.EstablecerConfiguracion();
+        Cerrar(true);
+    }
+
     private void GuardarConfiguracion()
     {
+        Grupos.RemoveAll(g => g.CantMarcos == 0 || g.Probabilidad == 0);
+
+        if(Grupos.Sum(g => g.Probabilidad) != 100)
+        {
+            Console.WriteLine("La suma de las probabilidades debe de ser de un 100%");
+            return;
+        }
+
+        Configuracion.Grupos = Grupos;
+
         Configuracion.CantCarpinteros = CantCarpinteros;
         Configuracion.MinTiempoLlegada = MinTiempoLlegada;
         Configuracion.MaxTiempoLlegada = MaxTiempoLlegada;
-        
+
+        Configuracion.MinTiempoTrabajarMarco = MinTiempoTrabajarMarco;
+        Configuracion.MaxTiempoTrabajarMarco = MaxTiempoTrabajarMarco;
+
+        Configuracion.TiempoSecado = TiempoSecado;
+
+        Configuracion.CantMarcosParaMantenimiento = CantMarcosParaMantenimiento;
+        Configuracion.MinTiempoPintado = MinTiempoPintado;
+        Configuracion.MaxTiempoPintado = MaxTiempoPintado;
+
+        Configuracion.ProbAciertoInspeccion = ProbAciertoInspeccion;
+        Configuracion.MinTiempoInspeccion = MinTiempoInspeccion;
+        Configuracion.MaxTiempoInspeccion = MaxTiempoInspeccion;
+
+        Configuracion.MinTiempoEmpaquetado = MinTiempoEmpaquetado;
+        Configuracion.MaxTiempoEmpaquetado = MaxTiempoEmpaquetado;
+
         Cerrar(true);
+    }
+
+    private void ValidarCantMarcos(ChangeEventArgs e, Grupo grupo)
+    {
+        int valorAnterior = grupo.CantMarcos;
+
+        if(Grupos.Exists(g => g.CantMarcos == Convert.ToInt32(e.Value)))
+        {
+            grupo.CantMarcos = valorAnterior;
+        }
+        else
+        {
+            grupo.CantMarcos = Convert.ToInt32(e.Value);
+        }
+
+        StateHasChanged();
+    }
+
+    private void AgregarNuevoGrupo()
+    {
+        int sigteCant;
+
+        if (Grupos.Count > 0)
+            sigteCant = Grupos.Max(g => g.CantMarcos) + 1;
+        else
+            sigteCant = 1;
+
+        while(Grupos.Exists(g => g.CantMarcos == sigteCant))
+        {
+            sigteCant++;
+        }
+
+        Grupos.Add(new Grupo(sigteCant, 0));
     }
 }

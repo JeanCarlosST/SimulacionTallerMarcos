@@ -40,7 +40,7 @@ namespace SimulacionTallerMarcos.Estaciones
             {
                 MarcoEnEmpaquetado = MarcosPorEmpaquetar.Dequeue();
                 MarcoEnEmpaquetado.Estado = EstadoMarco.Empacando;
-                MarcoEnEmpaquetado.MinutosParaEmpaquetar = Utilidades.AleatorioEntre(10, 15);
+                MarcoEnEmpaquetado.MinutosParaEmpaquetar = Utilidades.AleatorioEntre(Configuracion.MinTiempoEmpaquetado, Configuracion.MaxTiempoEmpaquetado);
             }
 
             Marco proxMarco = Inspeccion.EntregarMarcoInspeccionado();

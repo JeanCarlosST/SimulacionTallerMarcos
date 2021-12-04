@@ -49,8 +49,8 @@
             </button>
 
             <button type="button" class="btn btn-secondary btn-lg" 
-            @onclick="() => { MostrarConfiguracion = true; }" disabled="@(Estado != EstadoSimulacion.Nueva)">
-                <span class="oi oi-terminal"></span>
+                @onclick="() => { MostrarConfiguracion = true; }" disabled="@(Estado != EstadoSimulacion.Nueva)">
+                <span class="oi oi-cog"></span>
             </button>
         </div>
     </div>
@@ -157,7 +157,7 @@
                             <span>Cantidad de marcos en cola para pintar: @Pintura.MarcosEnEspera.Count</span>
                         </div>
                         <div class="col">
-                            <span>Marcos para mantenimiento: @(20 - Pintura.MarcosPintados % 20)</span>
+                            <span>Marcos para mantenimiento: @(Configuracion.CantMarcosParaMantenimiento - Pintura.MarcosPintados % Configuracion.CantMarcosParaMantenimiento)</span>
                         </div>
                     </div>
                     <div class="row d-flex justify-content-center">
@@ -281,7 +281,7 @@
             if(MinutosTranscurridos >= ProximaLlegadaGrupos)
             {
                 Recepcion.GenerarMarcos();
-                int CantTiempoProxLlegada = Utilidades.AleatorioEntre(Configuracion.MinTiempoLlegada, Configuracion.MaxTiempoLlegada);
+                int CantTiempoProxLlegada = Utilidades.AleatorioEntre(Configuracion.MinTiempoLlegada, Configuracion.MaxTiempoLlegada) * 60;
                 ProximaLlegadaGrupos = MinutosTranscurridos + CantTiempoProxLlegada;
                 TotalTiempoEntreLlegadaGrupos += CantTiempoProxLlegada;
             }

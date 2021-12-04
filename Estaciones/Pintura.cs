@@ -58,7 +58,7 @@ namespace SimulacionTallerMarcos.Estaciones
                         MarcoPintado = MarcoEnProceso;
                         MarcoEnProceso = null;
 
-                        if(MarcosPintados % 20 == 0)
+                        if(MarcosPintados % Configuracion.CantMarcosParaMantenimiento == 0)
                         {
                             MinutosParaMantenimiento = Utilidades.AleatorioEntre(2, 4) * 15;
                             Estado = EstadoMaquinaPintura.Mantenimiento;

@@ -44,27 +44,29 @@
                         <h5>
                             <strong>Carpintería</strong>
                         </h5> 
-                        <table class="table my-1 text-center">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Carpinteros</th>
-                                    @for(int i = 1; i <= Simulador.Carpinteria.Carpinteros.Count; i++)
-                                    {
-                                        <th scope="col">#@i</th>
-                                    }
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Horas Trabajadas</td>
-                                    @foreach(Carpintero carpintero in Simulador.Carpinteria.Carpinteros)
-                                    {
-                                        float horasTrabajadas = carpintero.MinutosTrabajados / 60f;
-                                        <td>@horasTrabajadas.ToString("0.00")</td>   
-                                    }
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="overflow-auto">
+                            <table class="table my-1 text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Carpinteros</th>
+                                        @for(int i = 1; i <= Simulador.Carpinteria.Carpinteros.Count; i++)
+                                        {
+                                            <th scope="col">#@i</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Horas Trabajadas</td>
+                                        @foreach(Carpintero carpintero in Simulador.Carpinteria.Carpinteros)
+                                        {
+                                            float horasTrabajadas = carpintero.MinutosTrabajados / 60f;
+                                            <td>@horasTrabajadas.ToString("0.00")</td>   
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Promedio Horas x Carpintero</span>
                             <input type="text" class="form-control text-center" @bind-value="PromedioHorasCarpintero" readonly/>

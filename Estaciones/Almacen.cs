@@ -28,7 +28,7 @@ namespace SimulacionTallerMarcos.Estaciones
                 marco.MinutosEnAlmacen++;
                 marco.MinutosTrabajados++;
 
-                if (marco.MinutosEnAlmacen >= 24 * 60)
+                if (marco.MinutosEnAlmacen >= Configuracion.TiempoSecado * 60)
                 {
                     marco.Estado = EstadoMarco.EnsambladoPegamentoSeco;
                     MarcosSecos.Add(marco);

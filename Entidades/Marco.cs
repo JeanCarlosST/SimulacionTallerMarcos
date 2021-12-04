@@ -29,8 +29,8 @@
         public Marco()
         {
             Estado = EstadoMarco.Desensamblado;
-            MinutosParaEnsamblaje = Utilidades.AleatorioEntre(2, 6) * 60;
-            MinutosParaPintado = Utilidades.AleatorioEntre(10, 20);
+            MinutosParaEnsamblaje = Utilidades.AleatorioEntre(Configuracion.MinTiempoTrabajarMarco, Configuracion.MaxTiempoTrabajarMarco) * 60;
+            MinutosParaPintado = Utilidades.AleatorioEntre(Configuracion.MinTiempoPintado, Configuracion.MaxTiempoPintado);
         }
     }
 }

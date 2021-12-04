@@ -36,7 +36,7 @@ namespace SimulacionTallerMarcos.Estaciones
                     MinutosConMarcoActual = 0;
                     CantMarcosInspeccionados++;
 
-                    if(Utilidades.AleatorioEntre(1,10) > 1) //Pasó la inspección
+                    if(Utilidades.AleatorioEntre(1, 100) < Configuracion.ProbAciertoInspeccion) //Pasó la inspección
                     {
                         MarcoEnInspeccion.Estado = EstadoMarco.Correcto;
                         MarcosInspeccionados.Enqueue(MarcoEnInspeccion);
@@ -55,7 +55,7 @@ namespace SimulacionTallerMarcos.Estaciones
             else if(MarcoEnInspeccion == null && MarcosPorInspeccionar.Count > 0)
             {
                 MarcoEnInspeccion = MarcosPorInspeccionar.Dequeue();
-                MarcoEnInspeccion.MinutosParaInspeccion = Utilidades.AleatorioEntre(10, 30);
+                MarcoEnInspeccion.MinutosParaInspeccion = Utilidades.AleatorioEntre(Configuracion.MinTiempoInspeccion, Configuracion.MaxTiempoInspeccion);
             }
 
             Marco proxMarco = Pintura.EntregarMarcoPintado();
