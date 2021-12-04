@@ -2,20 +2,38 @@
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <span class="fs-4 fw-bold">Tabla de Resultados</span>
+                <span class="fs-4 fw-bold">Configuración</span>
                 <button type="button" class="btn-close" @onclick="() => Cerrar(false)" data-bs-dismiss="modal" aria-label="Close"/>
             </div>
             <div class="modal-body">
-                 <div class="input-group my-1">
-                    <span class="input-group-text">Cantidad de carpinteros</span>
-                    <input type="number" class="form-control text-center" min="5" @bind-value="CantCarpinteros"/>
-                </div>
-                <div class="input-group my-1">
-                    <span class="input-group-text">Tiempo min. llegada entre grupos</span>
-                    <input type="number" class="form-control text-center" min="1" @bind-value="MinTiempoLlegada"/>
-                    <span class="input-group-text">Tiempo max. llegada entre grupos</span>
-                    <input type="number" class="form-control text-center" min="1" @bind-value="MaxTiempoLlegada"/>
-                </div>
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#recepcion" type="button" role="tab" aria-controls="recepcion" aria-selected="true">Recepción</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#carpinteria" type="button" role="tab" aria-controls="carpinteria" aria-selected="false">Carpintería</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#almacen" type="button" role="tab" aria-controls="almacen" aria-selected="false">Almacen</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#pintura" type="button" role="tab" aria-controls="pintura" aria-selected="false">Pintura</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#inspeccion" type="button" role="tab" aria-controls="inspeccion" aria-selected="false">Inspección</button>
+                      </li>
+                      <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#empaquetadora" type="button" role="tab" aria-controls="empaquetadora" aria-selected="false">Empaquetadora</button>
+                      </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane fade show active" id="recepcion" role="tabpanel" aria-labelledby="recepcion-tab"><RecepcionConfig/></div>
+                  <div class="tab-pane fade" id="carpinteria" role="tabpanel" aria-labelledby="carpinteria-tab"><CarpinteriaConfig/></div>
+                  <div class="tab-pane fade" id="almacen" role="tabpanel" aria-labelledby="almacen-tab"><AlmacenConfig/></div>
+                  <div class="tab-pane fade" id="pintura" role="tabpanel" aria-labelledby="pintura-tab"><PinturaConfig/></div>
+                  <div class="tab-pane fade" id="inspeccion" role="tabpanel" aria-labelledby="inspeccion-tab"><InspeccionConfig/></div>
+                  <div class="tab-pane fade" id="empaquetadora" role="tabpanel" aria-labelledby="empaquetadora-tab"><EmpaquetadoraConfig/></div>
+              </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-warning" @onclick="Configuracion.EstablecerConfiguracion">
