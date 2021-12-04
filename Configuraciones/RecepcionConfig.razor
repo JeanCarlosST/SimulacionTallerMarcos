@@ -1,12 +1,89 @@
-﻿ <div class="input-group my-1">
-  <span class="input-group-text">Tiempo Máximo de Llegada</span>
-    <input type="number" @bind="Configuracion.MinTiempoLlegada" class="form-control text-center"/>
+﻿<div class="row">
+    <div class="col-sm">
+        <div class="input-group my-1">
+            <span class="input-group-text"><strong>Tiempo Minimo de Llegada</strong></span>
+            <input type="number" @bind="Configuracion.MinTiempoLlegada" class="form-control text-center"/>
+        </div>
+    </div>
+
+    <div class="col-sm">
+        <div class="input-group my-1">
+  <span class="input-group-text"><strong>Tiempo Máximo de Llegada</strong></span>
+    <input type="number" @bind="Configuracion.MaxTiempoLlegada" class="form-control text-center"/>
 </div>
-<div class="input-group my-1">
-  <span class="input-group-text">Tiempo Minimo de Llegada</span>
-    <input type="number" @bind="Configuracion.MinTiempoLlegada" class="form-control text-center"/>
+    </div>
+
 </div>
+<div class="card-header">
+    <span/><strong>Grupos de Llegada</strong>
+</div>
+<div class="card-body">
+    <did class="row">
+        <div class="col-sm">
+             <div class="input-group my-1">
+            <span class="input-group-text"><strong>Cantidad Marcos</strong></span>
+            <input type="number" @bind="cantMarcos" class="form-control text-center"/>
+        </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group my-1">
+                <span class="input-group-text"><strong>Probabilidad</strong></span>
+                <input type="number" @bind="probabilidad" class="form-control text-center"/>
+            </div>
+        </div>
+        <div class="col-sm">
+           <button type="button" class="btn btn-success" @onclick="Agregar">Agregar</button>
+        </div>
+    </did>
+    <table class="table table-striped my-1 text-center">
+        <thead>
+            <tr>
+                <th scope="col">Cantidad Marcos</th>
+                <th scope="col">Probabilidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grupo in Grupos)
+            {
+                    <tr>
+                        <td><input type="number" @bind="grupo.CantMarcos" class="form-control text-center"/></td>
+                        <td><input type="number" @bind="grupo.Probabilidad" class="form-control text-center"/></td>
+                        <td><button type="button" class="btn btn-danger" @onclick="(() => Remover(grupo))">Remover</button></td>
+                    </tr>
+
+            }
+        </tbody>
+     </table>
+</div>
+
+
 
 @code {
+    [Parameter] public int TiempoMin { get; set; }
+    [Parameter] public int TiempoMax { get; set; }
+    [Parameter] public List<Grupo> Grupos { get; set; }
+    int cantMarcos;
+    int probabilidad;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+
+    }
+
+    private void Remover(Grupo grupo)
+    {
+        Grupos.Remove(grupo);
+    }
+
+    private void Agregar()
+    {
+        if (cantMarcos != 0 && probabilidad != 0)
+        {
+            Grupos.Add(new Grupo(cantMarcos, probabilidad));
+            cantMarcos = 0;
+            probabilidad = 0;
+        }
+    }
 }

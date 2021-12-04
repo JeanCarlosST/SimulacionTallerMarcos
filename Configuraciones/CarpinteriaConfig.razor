@@ -1,5 +1,16 @@
-﻿<h3>CarpinteriaConfig</h3>
-
+﻿
+ <div class="input-group my-1">
+  <span class="input-group-text"><strong>Tiempo Minimo de Llegada</strong></span>
+    <input type="number" @bind="Carpinteros" class="form-control text-center"/>
+</div>
 @code {
+    [Parameter] public int Carpinteros { get; set; }
+
+     protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+       
+    }
 
 }

@@ -214,7 +214,7 @@
 
     @if(MostrarConfiguracion)
     {
-        <ConfiguracionModal OnClose="CerrarConfiguracion"/>
+        <ConfiguracionModal Height="50" OnClose="CerrarConfiguracion"/>
     }
 </div>
 
@@ -247,6 +247,13 @@
         base.OnInitialized();
         Configuracion.EstablecerConfiguracion();
         EstablecerDatosSimulacion();
+
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+       
     }
 
     public void EstablecerDatosSimulacion()
