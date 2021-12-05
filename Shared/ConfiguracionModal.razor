@@ -1,6 +1,6 @@
 ﻿<div class="modal fade show" role="dialog" style="display:block; background-color: rgba(10,10,10,.8);" aria-modal="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
+        <div class="modal-content h-75">
             <div class="modal-header">
                 <span class="fs-4 fw-bold">Configuración</span>
                 <button type="button" class="btn-close" @onclick="() => Cerrar(false)" data-bs-dismiss="modal" aria-label="Close"/>
@@ -60,13 +60,13 @@
                                     {
                                         <tr>
                                             <td>
-                                                <input type="number" class="form-control text-center" @bind-value="grupo.CantMarcos"/>
+                                                <input type="number" step="1" class="form-control text-center" @bind-value="grupo.CantMarcos"/>
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control text-center" @bind-value="grupo.Probabilidad"/>
+                                                <input type="number" step="1" class="form-control text-center" @bind-value="grupo.Probabilidad"/>
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-danger" @onclick="() => {Grupos.Remove(grupo);}">
+                                                <button type="button" class="btn btn-danger" @onclick="() => { Grupos.Remove(grupo); }">
                                                     <span class="oi oi-trash"></span>
                                                 </button>
                                             </td>

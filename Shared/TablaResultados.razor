@@ -61,7 +61,14 @@
                                         @foreach(Carpintero carpintero in Simulador.Carpinteria.Carpinteros)
                                         {
                                             float horasTrabajadas = carpintero.MinutosTrabajados / 60f;
-                                            <td>@horasTrabajadas.ToString("0.00")</td>   
+                                            <td>@horasTrabajadas.ToString("0.00h")</td>   
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td>Cant. Marcos Trabajados</td>
+                                        @foreach(Carpintero carpintero in Simulador.Carpinteria.Carpinteros)
+                                        {
+                                            <td>@carpintero.CantMarcosTrabajados</td>   
                                         }
                                     </tr>
                                 </tbody>
@@ -116,23 +123,27 @@
                         <h5>
                             <strong>Inspección</strong>
                         </h5> 
-                        <table class="table my-1 text-center">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Número de Fallas</th>
-                                    <th scope="col">Cant. Marcos</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @for(int i = 0; i < Simulador.Inspeccion.MarcosDefectuosos.Count; i++)
-                                {
+                        <div class="overflow-auto">
+                            <table class="table my-1 text-center">
+                                <thead>
                                     <tr>
-                                        <td>@i</td>
-                                        <td>@Simulador.Inspeccion.MarcosDefectuosos[i]</td>
+                                        <th scope="col">Número de Fallas</th>
+                                        <th scope="col">Cant. Fallas Acumulado</th>
+                                        <th scope="col">Cant. Fallas Único</th>
                                     </tr>
-                                }
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach(HistorialFalloMarcos historial in Simulador.Inspeccion.HistorialFalloMarcos)
+                                    {
+                                        <tr>
+                                            <td>@historial.NumFallas</td>
+                                            <td>@historial.CantFallasAcumulado</td>
+                                            <td>@historial.CantFallasUnico</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="input-group my-1">
                             <span class="input-group-text">Tiempo Inspección</span>
                             <input type="text" class="form-control text-center" @bind-value="TotalInspeccion" readonly/>
@@ -224,9 +235,9 @@
         int CantGrupos = Simulador.Recepcion.CantGrupos.Sum(g => g.Key);
         
         if (CantGrupos > 0)
-            PromedioLlegadaGrupos = (Simulador.TotalTiempoEntreLlegadaGrupos / CantGrupos / 60f).ToString("0.00");
+            PromedioLlegadaGrupos = (Simulador.TotalTiempoEntreLlegadaGrupos / CantGrupos / 60f).ToString("0.00h");
         else
-            PromedioLlegadaGrupos = "0.00";
+            PromedioLlegadaGrupos = "0.00h";
     }
 
     private void ObtenerDatosCarpinteria()
@@ -234,12 +245,12 @@
         float horasTotalesTrabajados = Simulador.Carpinteria.Carpinteros.Sum(c => c.MinutosTrabajados) / 60;
         int cantMarcosTrabajados = Simulador.Carpinteria.Carpinteros.Sum(c => c.CantMarcosTrabajados);
 
-        PromedioHorasCarpintero = $"{(horasTotalesTrabajados / Simulador.Carpinteria.Carpinteros.Count).ToString("0.00")}";
+        PromedioHorasCarpintero = $"{(horasTotalesTrabajados / Simulador.Carpinteria.Carpinteros.Count).ToString("0.00h")}";
 
         if (cantMarcosTrabajados > 0)
-            PromedioEnsamblajeMarcos = $"{(horasTotalesTrabajados / cantMarcosTrabajados).ToString("0.00")}";
+            PromedioEnsamblajeMarcos = $"{(horasTotalesTrabajados / cantMarcosTrabajados).ToString("0.00h")}";
         else
-            PromedioEnsamblajeMarcos = "0.00";
+            PromedioEnsamblajeMarcos = "0.00h";
     }
 
     private void ObtenerDatosAlmacen()
@@ -249,39 +260,39 @@
 
     private void ObtenerDatosPintura()
     {
-        TotalUsoPintura = (Simulador.Pintura.TotalMinutosPintando / 60f).ToString("0.00");
+        TotalUsoPintura = (Simulador.Pintura.TotalMinutosPintando / 60f).ToString("0.00h");
 
         if (Simulador.Pintura.MarcosPintados > 0)
-            PromedioUsoPintura = $"{((float)Simulador.Pintura.TotalMinutosPintando / Simulador.Pintura.MarcosPintados / 60f).ToString("0.00")}";
+            PromedioUsoPintura = $"{((float)Simulador.Pintura.TotalMinutosPintando / Simulador.Pintura.MarcosPintados / 60f).ToString("0.00h")}";
         else
-            PromedioUsoPintura = "0.00";
+            PromedioUsoPintura = "0.00h";
 
-        TotalMantenimientoPintura = (Simulador.Pintura.TotalMinutosEnMantenimiento / 60f).ToString("0.00");
+        TotalMantenimientoPintura = (Simulador.Pintura.TotalMinutosEnMantenimiento / 60f).ToString("0.00h");
 
         if (Simulador.Pintura.VecesEnMantenimiento > 0)
-            PromedioMantenimientoPintura = $"{((float)Simulador.Pintura.TotalMinutosEnMantenimiento / Simulador.Pintura.VecesEnMantenimiento / 60f).ToString("0.00")}";
+            PromedioMantenimientoPintura = $"{((float)Simulador.Pintura.TotalMinutosEnMantenimiento / Simulador.Pintura.VecesEnMantenimiento / 60f).ToString("0.00h")}";
         else
-            PromedioMantenimientoPintura = "0.00";
+            PromedioMantenimientoPintura = "0.00h";
     }
 
     private void ObtenerDatosInspeccion()
     {
-        TotalInspeccion = (Simulador.Inspeccion.TotalMinutosInspeccionados / 60f).ToString("0.00");
+        TotalInspeccion = (Simulador.Inspeccion.TotalMinutosInspeccionados / 60f).ToString("0.00h");
 
         if (Simulador.Inspeccion.CantMarcosInspeccionados > 0)
-            PromedioInspeccion = $"{((float)Simulador.Inspeccion.TotalMinutosInspeccionados / Simulador.Inspeccion.CantMarcosInspeccionados / 60f).ToString("0.00")}";
+            PromedioInspeccion = $"{((float)Simulador.Inspeccion.TotalMinutosInspeccionados / Simulador.Inspeccion.CantMarcosInspeccionados / 60f).ToString("0.00h")}";
         else
-            PromedioInspeccion = "0.00";
+            PromedioInspeccion = "0.00h";
     }
 
     private void ObtenerDatosEmpaquetadora()
     {
-        TotalEmpaquetadora = (Simulador.Empaquetadora.TotalMinutosEmpaquetando / 60f).ToString("0.00");
+        TotalEmpaquetadora = (Simulador.Empaquetadora.TotalMinutosEmpaquetando / 60f).ToString("0.00h");
 
         if (Simulador.Empaquetadora.TotalMarcosEmpaquetados > 0)
-            PromedioEmpaquetadora = $"{((float)Simulador.Empaquetadora.TotalMinutosEmpaquetando / Simulador.Empaquetadora.TotalMarcosEmpaquetados / 60f).ToString("0.00")}";
+            PromedioEmpaquetadora = $"{((float)Simulador.Empaquetadora.TotalMinutosEmpaquetando / Simulador.Empaquetadora.TotalMarcosEmpaquetados / 60f).ToString("0.00h")}";
         else
-            PromedioEmpaquetadora = "0.00";
+            PromedioEmpaquetadora = "0.00h";
 
     }
 
@@ -291,8 +302,3 @@
 
     }
 }
-@*
-General
-Cant de marcos completamente trabajados
-*@
-

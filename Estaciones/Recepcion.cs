@@ -10,6 +10,14 @@ namespace SimulacionTallerMarcos.Estaciones
 
         public Dictionary<int, int> CantGrupos { get; set; } = new();
 
+        public Recepcion()
+        {
+            foreach(Grupo grupo in Configuracion.Grupos)
+            {
+                CantGrupos.Add(grupo.CantMarcos, 0);
+            }
+        }
+
         public void GenerarMarcos()
         {
             int cantMarcos = 4;
@@ -23,14 +31,7 @@ namespace SimulacionTallerMarcos.Estaciones
                 if(prob < probAcumulada)
                 {
                     cantMarcos = grupo.CantMarcos;
-                    if (CantGrupos.ContainsKey(cantMarcos))
-                    {
-                        CantGrupos[cantMarcos]++;
-                    }
-                    else
-                    {
-                        CantGrupos.Add(cantMarcos, 1);
-                    }
+                    CantGrupos[cantMarcos]++;
                     break;
                 }
             }
@@ -58,10 +59,10 @@ namespace SimulacionTallerMarcos.Estaciones
             
             if(ObtenerCantMarcos() > 0 )
             {
-                return Marcos.Dequeue();
+                marco = Marcos.Dequeue();
             }
 
-            return null;
+            return marco;
         }
     }
 }

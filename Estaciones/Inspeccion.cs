@@ -14,19 +14,19 @@ namespace SimulacionTallerMarcos.Estaciones
         private int MinutosConMarcoActual { get; set; }
         public int TotalMinutosInspeccionados { get; set; }
         public int CantMarcosInspeccionados { get; set; }
-        public List<int> MarcosDefectuosos { get; set; }
+        public List<HistorialFalloMarcos> HistorialFalloMarcos { get; set; }
         public Inspeccion(Pintura pintura, Recepcion recepcion)
         {
             MarcosPorInspeccionar = new();
             MarcosInspeccionados = new();
-            MarcosDefectuosos = new();
+            HistorialFalloMarcos = new();
             Pintura = pintura;
             Recepcion = recepcion;
         }
 
         public void Inspeccionar()
         {
-            if(MarcoEnInspeccion != null)
+            if (MarcoEnInspeccion != null)
             {
                 MinutosConMarcoActual++;
                 TotalMinutosInspeccionados++;
@@ -36,7 +36,7 @@ namespace SimulacionTallerMarcos.Estaciones
                     MinutosConMarcoActual = 0;
                     CantMarcosInspeccionados++;
 
-                    if(Utilidades.AleatorioEntre(1, 100) < Configuracion.ProbAciertoInspeccion) //Pasó la inspección
+                    if (Utilidades.AleatorioEntre(1, 100) < Configuracion.ProbAciertoInspeccion) //Pasó la inspección
                     {
                         MarcoEnInspeccion.Estado = EstadoMarco.Correcto;
                         MarcosInspeccionados.Enqueue(MarcoEnInspeccion);
@@ -52,7 +52,7 @@ namespace SimulacionTallerMarcos.Estaciones
                     MarcoEnInspeccion = null;
                 }
             }
-            else if(MarcoEnInspeccion == null && MarcosPorInspeccionar.Count > 0)
+            else if (MarcoEnInspeccion == null && MarcosPorInspeccionar.Count > 0)
             {
                 MarcoEnInspeccion = MarcosPorInspeccionar.Dequeue();
                 MarcoEnInspeccion.MinutosParaInspeccion = Utilidades.AleatorioEntre(Configuracion.MinTiempoInspeccion, Configuracion.MaxTiempoInspeccion);
@@ -60,21 +60,31 @@ namespace SimulacionTallerMarcos.Estaciones
 
             Marco proxMarco = Pintura.EntregarMarcoPintado();
 
-            if(proxMarco != null)
+            if (proxMarco != null)
             {
                 MarcosPorInspeccionar.Enqueue(proxMarco);
-            }    
+            }
         }
 
         public void AgregarCasoMarco(int cantFallada)
         {
-            if (cantFallada + 1 > MarcosDefectuosos.Count)
+            HistorialFalloMarcos historial = HistorialFalloMarcos.Find(h => h.NumFallas == cantFallada);
+
+            if(historial != null)
             {
-                MarcosDefectuosos.Add(1);
+                historial.CantFallasAcumulado++;
+                historial.CantFallasUnico++;
             }
             else
             {
-                MarcosDefectuosos[cantFallada]++;
+                historial = new HistorialFalloMarcos(cantFallada);
+                HistorialFalloMarcos.Add(historial);
+            }
+
+            if (cantFallada >= 2)
+            {
+                int casoAnterior = HistorialFalloMarcos.IndexOf(historial) - 1;
+                HistorialFalloMarcos[casoAnterior].CantFallasUnico--;
             }
         }
 
@@ -82,7 +92,7 @@ namespace SimulacionTallerMarcos.Estaciones
         {
             Marco marco = null;
 
-            if(MarcosInspeccionados.Count > 0)
+            if (MarcosInspeccionados.Count > 0)
             {
                 marco = MarcosInspeccionados.Dequeue();
             }
